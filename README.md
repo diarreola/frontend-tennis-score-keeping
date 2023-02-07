@@ -1,5 +1,13 @@
 # Getting Started with Create React App
 
+As you submit your capstone repository update your README.md file to include:
+
+    A description of the application
+    A list of dependencies
+    Instructions for setting up the app
+
+Screenshots or embedded videos can be helpful but are not required.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
