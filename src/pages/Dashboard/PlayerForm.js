@@ -11,7 +11,7 @@ function PlayerForm(props) {
     firstName: '',
     lastName: '',
     dob: '',
-    utr: '',
+    utr: 0,
     serveStyle: ''
   });
 
@@ -21,7 +21,7 @@ function PlayerForm(props) {
     setFormFields({
       firstName: '',
       lastName: '',
-      dob: '',
+      dateOfBirth: '',
       utr: '',
       serveStyle: ''
     });
@@ -75,15 +75,15 @@ function PlayerForm(props) {
         <Card.Header>Add a New Player </Card.Header>
         <Card.Body>
           <Form
-            aria-label="Create a New Board"
-            name="boardForm"
+            aria-label="Add a New Player"
+            name="playerForm"
             className="player-form"
             onSubmit={onFormSubmit}>
             <Form.Group controlId="formFirstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
                   required
-                  name="first-name"
+                  name="firstName"
                   type="first-name"
                   className="player-first-name"
                   value={formFields.firstName}
@@ -93,7 +93,7 @@ function PlayerForm(props) {
               <Form.Label>Last Name</Form.Label>
               <Form.Control
                   required
-                  name="last-name"
+                  name="lastName"
                   type="last-name" 
                   className="player-last-name"
                   value={formFields.lastName}
@@ -102,17 +102,18 @@ function PlayerForm(props) {
             <DatePicker
               selected={formFields.dob}
               onChange={onDOBChange}
+              name="dateOfBirth"
               className="form-control"
               minDate={today}
               customInput={
                 <input
                   type="text"
-                  id="validationCustom01"
-                  placeholder="First name"
+                  id="DOB"
+                  placeholder="DOB"
                 />
               }
             />
-            <Form.Select value={formFields.serveStyle} onChange={onServeStyleChange}aria-label="Default select example">
+            <Form.Select name="serveStyle" value={formFields.serveStyle} onChange={onServeStyleChange} aria-label="Default select example">
                 <option className="option" value="none">Choose A Serve Style</option>
                 <option className="option" value="right">Right</option>
                 <option className="option" value="left">Left</option>

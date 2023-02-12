@@ -1,5 +1,5 @@
 import React from 'react';
-import PlayerForm from '..PlayerForm';
+import PlayerForm from '../PlayerForm';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 
@@ -17,8 +17,9 @@ describe('PlayerForm Tests', () => {
       firstName: '',
       lastName: '',
       dateOfBirth: '',
-      serveStyle: '',
-      utr: '',
+      serveStyle: 'none',
+      utr: 0,
     });
   });
+
 });
