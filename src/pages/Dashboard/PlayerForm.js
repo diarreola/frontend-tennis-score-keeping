@@ -1,13 +1,9 @@
 import { React, useState } from 'react';
-// import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-// import { Formik } from 'formik';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 
 const today = new Date();
 function PlayerForm(props) {
@@ -18,15 +14,9 @@ function PlayerForm(props) {
     utr: '',
     serveStyle: ''
   });
-  // lift up
 
   const onFormSubmit = (event) => {
     event.preventDefault();
-
-    // props.addBoardCallBack({
-    //   title: formFields.title,
-    //   owner: formFields.owner
-    // });
 
     setFormFields({
       firstName: '',
@@ -60,9 +50,10 @@ function PlayerForm(props) {
   };
 
   const onUTRChange = (event) => {
+    const validUTR = (event.target.validity.valid) ? event.target.value : '';
     setFormFields({
         ...formFields,
-        utr: event.target.value
+        utr: validUTR
     })
   };
 
@@ -132,7 +123,10 @@ function PlayerForm(props) {
               <Form.Control
                   required
                   name="utr"
-                  type="utr" 
+                  type="number"
+                  pattern="[0-9]*"
+                  min="1"
+                  max="16"
                   className="player-utr"
                   value={formFields.utr}
                   onChange={onUTRChange}/>
@@ -147,9 +141,5 @@ function PlayerForm(props) {
     
   );
 }
-
-// NewBoardForm.propTypes = {
-//   addBoardCallBack: PropTypes.func.isRequired
-// };
 
 export default PlayerForm;
