@@ -10,19 +10,20 @@ function NewMatchForm({players}) {
     playerB: 0,
     numSets: '',
     numGames: '',
+    matchName: ''
   });
 
   const [disableButton, setDisableButton] = useState(true);
 
   const onFormSubmit = (event) => {
     event.preventDefault();
-    console.log('for', formFields)
 
     setFormFields({
       playerA: 0,
       playerB: 0,
-      numSets: null,
-      numGames: null,
+      numSets: '',
+      numGames: '',
+      matchName: ''
     });
   };
 
@@ -39,6 +40,13 @@ function NewMatchForm({players}) {
     setFormFields({
       ...formFields,
       numGames: validNumGames,
+    });
+  };
+
+  const onMatchNameChange = (event) => {
+    setFormFields({
+      ...formFields,
+      matchName: event.target.value,
     });
   };
 
@@ -82,6 +90,16 @@ function NewMatchForm({players}) {
             className="new-match-form"
             onSubmit={onFormSubmit}
           >
+          <Form.Group controlId="formFirstName">
+              <Form.Label>Match Name</Form.Label>
+              <Form.Control
+                  required
+                  name="matchName"
+                  type="text"
+                  className="match-name"
+                  value={formFields.matchName}
+                  onChange={onMatchNameChange} />
+            </Form.Group>
             <Form.Group controlId="formNumSets">
               <Form.Label>Number of Sets</Form.Label>
               <Form.Control
