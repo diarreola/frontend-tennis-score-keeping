@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 
 const today = new Date();
-function PlayerForm() {
+function PlayerForm({addPlayersCallBack}) {
   const [formFields, setFormFields] = useState({
     firstName: '',
     lastName: '',
@@ -17,6 +17,14 @@ function PlayerForm() {
 
   const onFormSubmit = (event) => {
     event.preventDefault();
+
+    addPlayersCallBack({
+      firstName: formFields.firstName,
+      lastName: formFields.lastName,
+      dob: formFields.dob,
+      utr: formFields.utr,
+      serveStyle: formFields.serveStyle
+    })
 
     setFormFields({
       firstName: '',
@@ -65,9 +73,8 @@ function PlayerForm() {
     setFormFields({
       ...formFields,
       serveStyle: event.target.value
-  })
+    })
   }
-
 
   return (
     <section>
@@ -143,8 +150,7 @@ function PlayerForm() {
           </Form>
         </Card.Body>
       </Card>
-    </section>
-    
+    </section> 
   );
 }
 

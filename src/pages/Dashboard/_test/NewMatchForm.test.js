@@ -14,8 +14,8 @@ describe('NewMatchForm Tests', () => {
         name: /Start a New Match/i,
       })
     ).toHaveFormValues({
-      playerA: '',
-      playerB: '',
+      playerA: 'none',
+      playerB: 'none',
       numSets: '',
       numGames: 'none'
     });
