@@ -1,10 +1,10 @@
 import './App.css';
-import PlayerForm from './pages/Dashboard/PlayerForm'
+import Dashboard from './pages/Dashboard/Dashboard'
 
 function App() {
   return (
     <div className="App">
-      <PlayerForm />
+      <Dashboard />
     </div>
   );
 }
