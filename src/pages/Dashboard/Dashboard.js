@@ -1,3 +1,4 @@
+import NewMatchForm from './NewMatchForm';
 import PlayerForm from './PlayerForm'
 import PlayerList from './PlayerList';
 import playersData from '../../data/player_data.json'
@@ -10,7 +11,7 @@ function Dashboard() {
     <div className="Dashboard">
       <Container fluid>
         <Row>
-          <Col sm></Col>
+          <Col sm><NewMatchForm /></Col>
           <Col sm><PlayerForm /></Col>
           <Col sm><PlayerList players={playersData}/></Col>
         </Row>
