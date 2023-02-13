@@ -2,7 +2,6 @@ import React from 'react';
 import PastMatchesRow from '../PastMatchesRow';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
-import matches from '../../../data/past_matches.json'
 
 describe('PastMatchesRow Component Tests', () => {
   const matchId = 1;

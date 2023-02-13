@@ -138,6 +138,7 @@ function PlayerForm({addPlayersCallBack}) {
                   required
                   name="utr"
                   type="number"
+                  step="any"
                   pattern="[0-9]*"
                   min="1"
                   max="16"
