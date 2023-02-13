@@ -48,6 +48,7 @@ function App() {
       <Dashboard
       addPlayersCallBack={addPlayers}
       addMatchCallBack={addMatch}
+      matches={matches}
       players={players}/>
     </div>
   );

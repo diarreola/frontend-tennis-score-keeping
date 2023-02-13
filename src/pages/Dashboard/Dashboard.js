@@ -1,11 +1,12 @@
 import NewMatchForm from './NewMatchForm';
 import PlayerForm from './PlayerForm'
 import PlayerList from './PlayerList';
+import PastMatchesTable from './PastMatchesTable'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function Dashboard({players, addPlayersCallBack, addMatchCallBack}) {
+function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack}) {
   return (
     <div className="Dashboard">
       <Container fluid>
@@ -15,7 +16,7 @@ function Dashboard({players, addPlayersCallBack, addMatchCallBack}) {
           <Col sm><PlayerList players={players}/></Col>
         </Row>
         <Row>
-          <Col sm>datatble</Col>
+          <Col sm><PastMatchesTable matches={matches}/></Col>
         </Row>
       </Container>
     </div>
