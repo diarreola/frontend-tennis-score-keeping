@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 
 const today = new Date();
-function PlayerForm(props) {
+function PlayerForm({addPlayersCallBack}) {
   const [formFields, setFormFields] = useState({
     firstName: '',
     lastName: '',
@@ -17,6 +17,14 @@ function PlayerForm(props) {
 
   const onFormSubmit = (event) => {
     event.preventDefault();
+
+    addPlayersCallBack({
+      firstName: formFields.firstName,
+      lastName: formFields.lastName,
+      dob: formFields.dob,
+      utr: formFields.utr,
+      serveStyle: formFields.serveStyle
+    })
 
     setFormFields({
       firstName: '',
@@ -65,9 +73,8 @@ function PlayerForm(props) {
     setFormFields({
       ...formFields,
       serveStyle: event.target.value
-  })
+    })
   }
-
 
   return (
     <section>
@@ -99,32 +106,39 @@ function PlayerForm(props) {
                   value={formFields.lastName}
                   onChange={onLastNameChange}/>
             </Form.Group>
-            <DatePicker
-              selected={formFields.dob}
-              onChange={onDOBChange}
-              name="dateOfBirth"
-              className="form-control"
-              minDate={today}
-              customInput={
-                <input
-                  type="text"
-                  id="DOB"
-                  placeholder="DOB"
-                />
-              }
-            />
-            <Form.Select name="serveStyle" value={formFields.serveStyle} onChange={onServeStyleChange} aria-label="Default select example">
-                <option className="option" value="none">Choose A Serve Style</option>
-                <option className="option" value="right">Right</option>
-                <option className="option" value="left">Left</option>
-                <option className="option" value="both">Both</option>
-            </Form.Select>
+            <Form.Group controlId="formDOB">
+              <Form.Label>Date of Birth</Form.Label>
+              <DatePicker
+                selected={formFields.dob}
+                onChange={onDOBChange}
+                name="dateOfBirth"
+                placeholderText='m/d/yyyy'
+                className="form-control"
+                maxDate={today}
+                customInput={
+                  <input
+                    type="text"
+                    id="DOB"
+                    placeholder="DOB"
+                  />
+                }
+              />
+            </Form.Group>
+            <Form.Group controlId="formServeStyle">
+              <Form.Select name="serveStyle" value={formFields.serveStyle} onChange={onServeStyleChange} aria-label="Default select example">
+                  <option className="option" value="none">Choose A Serve Style</option>
+                  <option className="option" value="right">Right</option>
+                  <option className="option" value="left">Left</option>
+                  <option className="option" value="both">Both</option>
+              </Form.Select>
+            </Form.Group>
             <Form.Group controlId="formUTR">
               <Form.Label>UTR</Form.Label>
               <Form.Control
                   required
                   name="utr"
                   type="number"
+                  step="any"
                   pattern="[0-9]*"
                   min="1"
                   max="16"
@@ -138,8 +152,7 @@ function PlayerForm(props) {
           </Form>
         </Card.Body>
       </Card>
-    </section>
-    
+    </section> 
   );
 }
 
