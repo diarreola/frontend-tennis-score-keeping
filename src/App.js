@@ -3,10 +3,11 @@ import './App.css';
 import { React, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import playersData from './data/player_data.json'
+import matchesData from './data/past_matches.json'
 
 function App() {
   const [players, setPlayers] = useState(playersData);
-  // match state
+  const [matches, setMatches] = useState(matchesData);
 
   const addPlayers = (newPlayer) => {
     const newPlayers = [...players];
@@ -26,9 +27,28 @@ function App() {
     setPlayers(newPlayers);
   };
 
+  const addMatch = (newMatchData) => {
+    const newMatch = {
+      player_a: newMatchData.playerA,
+      player_b: newMatchData.playerB,
+      no_of_sets: newMatchData.numSets,
+      no_of_gamesperset: newMatchData.numGames,
+      match_date: newMatchData.matchName
+    };
+    // TODO: Grab player name by id -> :)
+    // TODO: cast sets/game by int
+
+    const newMatches = [...matches];
+    newMatches.push(newMatch);
+    setMatches(newMatches);
+  };
+
   return (
     <div className="App">
-      <Dashboard addPlayersCallBack={addPlayers} players={players}/>
+      <Dashboard
+      addPlayersCallBack={addPlayers}
+      addMatchCallBack={addMatch}
+      players={players}/>
     </div>
   );
 }

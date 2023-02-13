@@ -4,13 +4,13 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Select from 'react-dropdown-select';
 
-function NewMatchForm({players}) {
+function NewMatchForm({addMatchCallBack, players}) {
   const [formFields, setFormFields] = useState({
     playerA: 0,
     playerB: 0,
     numSets: '',
     numGames: '',
-    matchName: ''
+    matchName: '',
   });
 
   const [disableButton, setDisableButton] = useState(true);
@@ -18,12 +18,14 @@ function NewMatchForm({players}) {
   const onFormSubmit = (event) => {
     event.preventDefault();
 
+    addMatchCallBack(formFields);
+
     setFormFields({
       playerA: 0,
       playerB: 0,
       numSets: '',
       numGames: '',
-      matchName: ''
+      matchName: '',
     });
   };
 
