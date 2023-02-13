@@ -1,7 +1,6 @@
 import React from 'react';
 
 function PastMatchesRow({id, matchDate, matchName, matchPlayerA, matchPlayerB}) {
-  console.log(matchName)
   return (
     <>
       <td>{matchName}</td>

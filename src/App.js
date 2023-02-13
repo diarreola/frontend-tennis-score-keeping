@@ -33,10 +33,8 @@ function App() {
       player_b: newMatchData.playerB,
       no_of_sets: newMatchData.numSets,
       no_of_gamesperset: newMatchData.numGames,
-      match_date: newMatchData.matchName
+      match_name: newMatchData.matchName
     };
-    // TODO: Grab player name by id -> :)
-    // TODO: cast sets/game by int
 
     const newMatches = [...matches];
     newMatches.push(newMatch);
@@ -48,7 +46,6 @@ function App() {
     for (const player of players) {
       if (player.id === playerId) {
         playerName = player.first_name + ' ' + player.last_name
-        console.log('player name', playerName)
         return playerName
       }
     }
