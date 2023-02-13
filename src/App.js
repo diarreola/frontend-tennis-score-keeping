@@ -8,7 +8,8 @@ import matchesData from './data/past_matches.json'
 function App() {
   const [players, setPlayers] = useState(playersData);
   const [matches, setMatches] = useState(matchesData);
-  // TODO: When matches is updated -> so is the PastMatchesTable
+
+  
   const addPlayers = (newPlayer) => {
     const newPlayers = [...players];
 

@@ -6,8 +6,8 @@ import matches from '../../../data/past_matches.json'
 
 describe('PastMatchesRow Component Tests', () => {
   const matchId = 1;
-  const matchPlayerA = 1;
-  const matchPlayerB = 2;
+  const matchPlayerA = 'Dennis Racket';
+  const matchPlayerB = 'Greta Smith';
   beforeEach(() => {
     render(
       <div>
