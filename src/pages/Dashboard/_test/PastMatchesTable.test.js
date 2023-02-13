@@ -5,7 +5,6 @@ import { render, screen } from '@testing-library/react';
 import matches from '../../../data/past_matches.json'
 
 describe('PastMatchesTable Component Tests', () => {
-  const playerId = 1;
   beforeEach(() => {
     render(
       <div>
