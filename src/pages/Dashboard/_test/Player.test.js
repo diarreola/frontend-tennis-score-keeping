@@ -4,10 +4,11 @@ import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 
 describe('Player Component Tests', () => {
+  const playerId = 1;
   beforeEach(() => {
     render(
       <div>
-        <Player firstName="Poppie" lastName="John" />
+        <Player id={playerId} firstName="Poppie" lastName="John" />
       </div>
     );
   });

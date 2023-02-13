@@ -2,7 +2,7 @@ import React from 'react';
 import PlayerList from '../PlayerList';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react'
-import players from '../../src/data/player_data.json'
+import players from '../../../data/player_data.json'
 
 
 describe('PlayList component Test', () => {
