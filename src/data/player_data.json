@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "first_name": "Dennis",
+    "last_name": "Racket",
+    "date_of_birth": "1/1/1",
+    "serve_style": "left",
+    "utr": "8"
+  },
+  {
+    "id": 2,
+    "first_name": "Greta",
+    "last_name": "lastname",
+    "date_of_birth": "2/2/2",
+    "serve_style": "left",
+    "utr": "3"
+  },
+  {
+    "id": 3,
+    "first_name": "Toad",
+    "last_name": "lastname",
+    "date_of_birth": "2/2/2",
+    "serve_style": "left",
+    "utr": "14"
+  },
+  {
+    "id": 4,
+    "first_name": "Tabby",
+    "last_name": "lastname",
+    "date_of_birth": "3/3/3",
+    "serve_style": "right",
+    "utr": "10"
+  },
+  {
+    "id": 5,
+    "first_name": "Dennis",
+    "last_name": "Racket",
+    "date_of_birth": "4/4/4",
+    "serve_style": "both",
+    "utr": "12"
+  }
+]
