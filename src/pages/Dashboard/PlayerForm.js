@@ -109,7 +109,7 @@ function PlayerForm({addPlayersCallBack}) {
             <Form.Group controlId="formDOB">
               <Form.Label>Date of Birth</Form.Label>
               <DatePicker
-                selected={formFields.dob}g
+                selected={formFields.dob}
                 onChange={onDOBChange}
                 name="dateOfBirth"
                 placeholderText='m/d/yyyy'
