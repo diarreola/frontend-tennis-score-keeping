@@ -10,7 +10,7 @@ function Dashboard({players, addPlayersCallBack}) {
     <div className="Dashboard">
       <Container fluid>
         <Row>
-          <Col sm><NewMatchForm /></Col>
+          <Col sm><NewMatchForm players={players}/></Col>
           <Col sm><PlayerForm addPlayersCallBack={addPlayersCallBack}/></Col>
           <Col sm><PlayerList players={players}/></Col>
         </Row>

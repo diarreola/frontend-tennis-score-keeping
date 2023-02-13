@@ -2,45 +2,27 @@ import { React, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import Select from 'react-dropdown-select';
 
-function NewMatchForm() {
+function NewMatchForm({players}) {
   const [formFields, setFormFields] = useState({
-    playerA: '',
-    playerB: '',
+    playerA: 0,
+    playerB: 0,
     numSets: '',
     numGames: '',
   });
 
+  const [disableButton, setDisableButton] = useState(true);
+
   const onFormSubmit = (event) => {
     event.preventDefault();
+    console.log('for', formFields)
 
     setFormFields({
-      playerA: '',
-      playerB: '',
-      numSets: '',
-      numGames: '',
-    });
-  };
-
-  const onPlayerAChange = (event) => {
-    if (event.target.value === 'none') {
-      //  TODO: Throw an modal error -> Please select serve style
-      return;
-    }
-    setFormFields({
-      ...formFields,
-      playerA: event.target.value,
-    });
-  };
-
-  const onPlayerBChange = (event) => {
-    if (event.target.value === 'none') {
-      //  TODO: Throw an modal error -> Please select serve style
-      return;
-    }
-    setFormFields({
-      ...formFields,
-      playerB: event.target.value,
+      playerA: 0,
+      playerB: 0,
+      numSets: null,
+      numGames: null,
     });
   };
 
@@ -60,6 +42,35 @@ function NewMatchForm() {
     });
   };
 
+  const onPlayerChange = (value) => {
+    if (value.length === 0) {
+      setFormFields({
+        ...formFields,
+        playerA: '',
+        playerB: '',
+      });
+      setDisableButton(true);
+      return
+    }
+    if (value.length < 2) {
+      setDisableButton(true);
+      return
+    }
+    if (value.length > 2) {
+      value.pop()
+      return
+    }
+    if (value.length === 2) {
+      setFormFields({
+        ...formFields,
+        playerA: value[0].id,
+        playerB: value[1].id,
+      });
+      setDisableButton(false);
+      return
+    }
+  };
+
   return (
     <section>
       <Card>
@@ -71,49 +82,6 @@ function NewMatchForm() {
             className="new-match-form"
             onSubmit={onFormSubmit}
           >
-            <Form.Group controlId="playerA">
-              <Form.Select
-                name="playerA"
-                value={formFields.playerA}
-                onChange={onPlayerAChange}
-                aria-label="Default select example"
-              >
-                <option className="option" value="none">
-                  Choose Player A
-                </option>
-                <option className="option" value="right">
-                  Right
-                </option>
-                <option className="option" value="left">
-                  Left
-                </option>
-                <option className="option" value="both">
-                  Both
-                </option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group controlId="playerB">
-              <Form.Select
-                name="playerB"
-                value={formFields.playerB}
-                onChange={onPlayerBChange}
-                aria-label="Default select example"
-              >
-                <option className="option" value="none">
-                  Choose Player B
-                </option>
-                <option className="option" value="right">
-                  Right
-                </option>
-                <option className="option" value="left">
-                  Left
-                </option>
-                <option className="option" value="both">
-                  Both
-                </option>
-              </Form.Select>
-            </Form.Group>
-
             <Form.Group controlId="formNumSets">
               <Form.Label>Number of Sets</Form.Label>
               <Form.Control
@@ -142,8 +110,21 @@ function NewMatchForm() {
                 onChange={onNumGamesChange}
               />
             </Form.Group>
-            <Button className="submit-button" type="submit">
-              Start
+            <div>
+              Choose Player A & Player B
+            <Select
+              options={players}
+              values={[]}
+              labelField="first_name"
+              valueField="id"
+              required
+              multi
+              name="select"
+              onChange={(value) => onPlayerChange(value)}
+            />
+            </div>
+            <Button disabled={disableButton} className="submit-button" type="submit">
+              Start a Match
             </Button>
           </Form>
         </Card.Body>
