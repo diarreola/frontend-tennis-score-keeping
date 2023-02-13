@@ -5,10 +5,12 @@ import { render, screen } from '@testing-library/react';
 import matches from '../../../data/past_matches.json'
 
 describe('PastMatchesTable Component Tests', () => {
+  const getPlayerNameFromId = (id) => {
+  };
   beforeEach(() => {
     render(
       <div>
-        <PastMatchesTable matches={matches}/>
+        <PastMatchesTable getPlayerNameFromId={getPlayerNameFromId} matches={matches}/>
       </div>
     );
   });
