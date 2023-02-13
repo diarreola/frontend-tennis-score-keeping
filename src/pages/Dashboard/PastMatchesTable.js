@@ -10,8 +10,8 @@ function PastMatchesTable(props) {
               id={match.id}
               matchDate={match.match_date}
               matchName={match.match_name}
-              matchPlayerA={match.player_a}
-              matchPlayerB={match.player_b}
+              matchPlayerA={props.getPlayerNameFromId(match.player_a)}
+              matchPlayerB={props.getPlayerNameFromId(match.player_b)}
             />
         </tr>
       );

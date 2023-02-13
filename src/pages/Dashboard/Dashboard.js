@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack}) {
+function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
   return (
     <div className="Dashboard">
       <Container fluid>
@@ -16,7 +16,7 @@ function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack}) {
           <Col sm><PlayerList players={players}/></Col>
         </Row>
         <Row>
-          <Col sm><PastMatchesTable matches={matches}/></Col>
+          <Col sm><PastMatchesTable getPlayerNameFromId={getPlayerNameFromId} matches={matches}/></Col>
         </Row>
       </Container>
     </div>

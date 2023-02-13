@@ -43,9 +43,21 @@ function App() {
     setMatches(newMatches);
   };
 
+  const getPlayerNameFromId = (playerId) => {
+    let playerName = '';
+    for (const player of players) {
+      if (player.id === playerId) {
+        playerName = player.first_name + ' ' + player.last_name
+        console.log('player name', playerName)
+        return playerName
+      }
+    }
+  };
+
   return (
     <div className="App">
       <Dashboard
+      getPlayerNameFromId={getPlayerNameFromId}
       addPlayersCallBack={addPlayers}
       addMatchCallBack={addMatch}
       matches={matches}
