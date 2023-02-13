@@ -109,11 +109,12 @@ function PlayerForm({addPlayersCallBack}) {
             <Form.Group controlId="formDOB">
               <Form.Label>Date of Birth</Form.Label>
               <DatePicker
-                selected={formFields.dob}
+                selected={formFields.dob}g
                 onChange={onDOBChange}
                 name="dateOfBirth"
+                placeholderText='m/d/yyyy'
                 className="form-control"
-                minDate={today}
+                maxDate={today}
                 customInput={
                   <input
                     type="text"
