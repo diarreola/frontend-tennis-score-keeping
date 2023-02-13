@@ -9,14 +9,14 @@ describe('PastMatchesRow Component Tests', () => {
   const matchPlayerB = 'Greta Smith';
   beforeEach(() => {
     render(
-      <div>
+      <tr key={matchId}>
         <PastMatchesRow
         id={matchId}
         matchDate='Sat, 25 Feb 2023 08:00:00 GMT'
         matchName='Fun Game'
         matchPlayerA={matchPlayerA}
         matchPlayerB={matchPlayerB}/>
-      </div>
+      </tr>
     );
   });
 
