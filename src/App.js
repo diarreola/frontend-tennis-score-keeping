@@ -2,6 +2,9 @@
 import './App.css';
 import { React, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
+import SignUp from './pages/Auth/SignUp';
+import SignIn from './pages/Auth/SignIn';
+import {Routes, Route} from 'react-router-dom'
 import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
 
@@ -54,12 +57,17 @@ function App() {
 
   return (
     <div className="App">
-      <Dashboard
+      <Routes>
+        <Route path='/' element={<SignIn />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+      </Routes>
+      {/* <Dashboard
       getPlayerNameFromId={getPlayerNameFromId}
       addPlayersCallBack={addPlayers}
       addMatchCallBack={addMatch}
       matches={matches}
-      players={players}/>
+      players={players}/> */}
     </div>
   );
 }
