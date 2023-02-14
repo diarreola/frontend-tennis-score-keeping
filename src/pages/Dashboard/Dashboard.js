@@ -8,17 +8,22 @@ import Col from 'react-bootstrap/Col';
 
 function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
   return (
-    <div className="Dashboard">
-      <Container fluid>
-        <Row>
-          <Col sm><NewMatchForm addMatchCallBack={addMatchCallBack} players={players}/></Col>
-          <Col sm><PlayerForm addPlayersCallBack={addPlayersCallBack}/></Col>
-          <Col sm><PlayerList players={players}/></Col>
-        </Row>
-        <Row>
-          <Col sm><PastMatchesTable getPlayerNameFromId={getPlayerNameFromId} matches={matches}/></Col>
-        </Row>
-      </Container>
+    <div>
+      <header>User Dashboard</header>
+      <section>
+      <div className="Dashboard">
+        <Container fluid>
+          <Row>
+            <Col sm><NewMatchForm addMatchCallBack={addMatchCallBack} players={players}/></Col>
+            <Col sm><PlayerForm addPlayersCallBack={addPlayersCallBack}/></Col>
+            <Col sm><PlayerList players={players}/></Col>
+          </Row>
+          <Row>
+            <Col sm><PastMatchesTable getPlayerNameFromId={getPlayerNameFromId} matches={matches}/></Col>
+          </Row>
+        </Container>
+      </div>
+      </section>
     </div>
   );
 }
