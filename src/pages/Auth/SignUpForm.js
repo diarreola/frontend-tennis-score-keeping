@@ -5,7 +5,6 @@ import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 
 const SignUpForm = () => {
-  // add first name and last name
   const [formFields, setFormFields] = useState({
     firstName: '',
     lastName: '',

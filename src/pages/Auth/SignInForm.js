@@ -1,20 +1,74 @@
-import React from 'react';
+import { UserAuth } from '../../context/AuthContext';
+import { React, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import {Link} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignInForm = () => {
+  const [formFields, setFormFields] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [error, setError] = useState('')
+  const { signIn } = UserAuth();
+  const navigate = useNavigate();
+
+  const onEmailChange = (event) => {
+    setFormFields({
+      ...formFields,
+      email: event.target.value,
+    });
+  };
+
+  const onPasswordChange = (event) => {
+    setFormFields({
+      ...formFields,
+      password: event.target.value,
+    });
+  };
+
+  const onSubmitForm = async (event) => {
+    event.preventDefault();
+    setError('')
+
+    try {
+      await signIn(formFields.email, formFields.password);
+      navigate('/dashboard');
+    } catch (e) {
+      setError(e.message);
+      console.log(e.message);
+      // add error modal
+    }
+    // call back to api
+
+    setFormFields({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: ''
+    });
+  };
+
   return (
     <div>
-      <Form>
+      <Form onSubmit={onSubmitForm}>
         <p>Don't have an account? <Link to='/signup' className='underline'>Sign up.</Link></p>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control required type="email" placeholder="Enter email" />
+          <Form.Control
+              required type="email"
+              placeholder="Enter email"
+              value={formFields.email}
+              onChange={onEmailChange} />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control required type="password" placeholder="Password" />
+          <Form.Control
+          required type="password"
+          placeholder="Password" 
+          value={formFields.password}
+          onChange={onPasswordChange} />
         </Form.Group>
         <Button variant="primary" type="submit">
           Submit
