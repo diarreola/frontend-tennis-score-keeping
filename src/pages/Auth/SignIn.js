@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import SignInForm from './SignInForm';
 
 
-const SignIn = () => {
+const SignIn = ({onHandleShow}) => {
   return (
     <Container>
         <Row>
@@ -16,7 +16,8 @@ const SignIn = () => {
             <Card>
               <Card.Header>Sign In</Card.Header>
               <Card.Body>
-                <SignInForm />
+                <SignInForm
+                onHandleShow={onHandleShow}/>
               </Card.Body>
             </Card>
           </Col>

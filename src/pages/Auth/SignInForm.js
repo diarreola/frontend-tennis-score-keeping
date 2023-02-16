@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 
-const SignInForm = () => {
+const SignInForm = ({onHandleShow}) => {
   const [formFields, setFormFields] = useState({
     email: '',
     password: ''
@@ -39,6 +39,7 @@ const SignInForm = () => {
       setError(e.message);
       console.log(e.message);
       // add error modal
+      onHandleShow('Email or password incorrect, Try again')
     }
     // call back to api
 

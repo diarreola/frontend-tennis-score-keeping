@@ -9,11 +9,17 @@ import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorModal from './components/ErrorModal';
 
 
 function App() {
   const [players, setPlayers] = useState(playersData);
   const [matches, setMatches] = useState(matchesData);
+  const [showModal, setShowModal] = useState({ show: false, message: '' });
+
+  const handleClose = () => setShowModal({ show: false, message: '' });
+  const handleShow = (errorMessage) =>
+    setShowModal({ show: true, message: errorMessage });
 
   const addPlayers = (newPlayer) => {
     const newPlayers = [...players];
@@ -61,7 +67,7 @@ function App() {
     <div className="App">
       <AuthContextProvider>
         <Routes>
-          <Route path='/' element={<SignIn />} />
+          <Route path='/' element={<SignIn onHandleShow={handleShow}/>} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/dashboard' element={
             <ProtectedRoute>
@@ -69,11 +75,13 @@ function App() {
                 getPlayerNameFromId={getPlayerNameFromId}
                 addPlayersCallBack={addPlayers}
                 addMatchCallBack={addMatch}
+                // onHandleShow={handleShow}
                 matches={matches}
                 players={players}/>
             </ProtectedRoute>}/>
         </Routes>
       </AuthContextProvider>
+      <ErrorModal showModal={showModal} onHandleClose={handleClose} />
     </div>
   );
 }
