@@ -5,11 +5,27 @@ import PastMatchesTable from './PastMatchesTable'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { UserAuth } from '../../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
+  const { user, logout } = UserAuth();
+  const navigate = useNavigate();
+
+  const onHandleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (e) {
+      console.log(e.message)
+    }
+  };
+
   return (
     <div>
       <header>User Dashboard</header>
+      {/* TODO: Add navbar hear */}
+      <button onClick={onHandleLogout} className='user-logout'>logout</button> 
       <section>
       <div className="Dashboard">
         <Container fluid>
