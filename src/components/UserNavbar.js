@@ -4,14 +4,13 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 const UserNavbar = ({user, onHandleLogout}) => {
-  console.log('user', user);
   return (
     <Navbar bg="dark" variant="dark">
       <Container>
         <Navbar.Brand href="#home">TennisPal</Navbar.Brand>
         <Navbar.Collapse className="justify-content-center">
             <Navbar.Text>
-              Signed in as: <a href="#login"></a>
+              Signed in as: {user.email}
             </Navbar.Text>
           </Navbar.Collapse>
         <Nav className="me-auto">

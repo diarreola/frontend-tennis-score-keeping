@@ -11,6 +11,8 @@ import UserNavbar from '../../components/UserNavbar';
 
 function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
   const { user, logout } = UserAuth();
+  console.log('user', user)
+  console.log('logout', logout)
   const navigate = useNavigate();
 
   const onHandleLogout = async () => {
