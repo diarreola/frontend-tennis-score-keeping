@@ -1,3 +1,4 @@
+import { UserAuth } from '../../context/AuthContext';
 import {React, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -11,9 +12,19 @@ const SignUpForm = () => {
     email: '',
     password: ''
   });
+  const [error, setError] = useState('')
 
-  const onSubmitForm = (event) => {
+  const {createUser} = UserAuth();
+
+  const onSubmitForm = async (event) => {
     event.preventDefault();
+    setError('')
+
+    try {
+      await createUser(formFields.email, formFields.password)
+    } catch (e) {
+      setError(e.message)
+    }
 
     // call back to api
 

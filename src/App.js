@@ -7,12 +7,15 @@ import SignIn from './pages/Auth/SignIn';
 import {Routes, Route} from 'react-router-dom'
 import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
+import { AuthContextProvider } from './context/AuthContext';
+
 
 function App() {
   const [players, setPlayers] = useState(playersData);
   const [matches, setMatches] = useState(matchesData);
 
-  
+  // console.log('process', process.env.REACT_APP_FB_API_KEY)
+
   const addPlayers = (newPlayer) => {
     const newPlayers = [...players];
 
@@ -57,17 +60,19 @@ function App() {
 
   return (
     <div className="App">
-      <Routes>
-        <Route path='/' element={<SignIn />} />
-        <Route path='/signup' element={<SignUp />} />
-        <Route path='/dashboard' element={
-            <Dashboard
-              getPlayerNameFromId={getPlayerNameFromId}
-              addPlayersCallBack={addPlayers}
-              addMatchCallBack={addMatch}
-              matches={matches}
-              players={players}/>} />
-      </Routes>
+      <AuthContextProvider>
+        <Routes>
+          <Route path='/' element={<SignIn />} />
+          <Route path='/signup' element={<SignUp />} />
+          <Route path='/dashboard' element={
+              <Dashboard
+                getPlayerNameFromId={getPlayerNameFromId}
+                addPlayersCallBack={addPlayers}
+                addMatchCallBack={addMatch}
+                matches={matches}
+                players={players}/>} />
+        </Routes>
+      </AuthContextProvider>
     </div>
   );
 }
