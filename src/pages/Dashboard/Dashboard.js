@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { UserAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import UserNavbar from '../../components/UserNavbar';
 
 function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
   const { user, logout } = UserAuth();
@@ -23,9 +24,8 @@ function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getP
 
   return (
     <div>
-      <header>User Dashboard</header>
-      {/* TODO: Add navbar hear */}
-      <button onClick={onHandleLogout} className='user-logout'>logout</button> 
+      <UserNavbar user={user} onHandleLogout={onHandleLogout}></UserNavbar>
+      {/* <button onClick={onHandleLogout} className='user-logout'>logout</button>  */}
       <section>
       <div className="Dashboard">
         <Container fluid>

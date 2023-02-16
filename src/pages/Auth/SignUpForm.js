@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 
-const SignUpForm = ({onHandleShow}) => {
+const SignUpForm = ({onHandleShow, addUserCallBack}) => {
   const [formFields, setFormFields] = useState({
     firstName: '',
     lastName: '',
@@ -19,6 +19,11 @@ const SignUpForm = ({onHandleShow}) => {
 
     try {
       await createUser(formFields.email, formFields.password);
+      addUserCallBack({
+        firstName: formFields.firstName,
+        lastName: formFields.lastName,
+        email: formFields.email,
+      })
       navigate('/dashboard');
     } catch (e) {
       onHandleShow(`Sign up error: ${e.message}`)

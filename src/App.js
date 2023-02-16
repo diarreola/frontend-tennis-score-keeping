@@ -15,6 +15,7 @@ import ErrorModal from './components/ErrorModal';
 function App() {
   const [players, setPlayers] = useState(playersData);
   const [matches, setMatches] = useState(matchesData);
+  const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState({ show: false, message: '' });
 
   const handleClose = () => setShowModal({ show: false, message: '' });
@@ -63,12 +64,30 @@ function App() {
     }
   };
 
+  const addUser = (newUser) => {
+    const newUsers = [...users];
+
+    // TODO: Remove when accessing API
+    const nextId = Math.max(...newUsers.map(player => player.id)) + 1;
+
+    newUsers.push({
+      id: nextId,
+      first_name: newUser.firstName,
+      last_name: newUser.lastName,
+      email: newUser.email
+    });
+
+    setUsers(newUsers);
+  };
+
   return (
     <div className="App">
       <AuthContextProvider>
         <Routes>
           <Route path='/' element={<SignIn onHandleShow={handleShow}/>} />
-          <Route path='/signup' element={<SignUp onHandleShow={handleShow}/>} />
+          <Route path='/signup' element={<SignUp
+            addUserCallBack={addUser}
+            onHandleShow={handleShow}/>} />
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <Dashboard

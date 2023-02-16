@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import SignUpForm from './SignUpForm';
 
-const SignUp = ({onHandleShow}) => {
+const SignUp = ({onHandleShow, addUserCallBack}) => {
   return (
     <div>
       <Container>
@@ -16,7 +16,9 @@ const SignUp = ({onHandleShow}) => {
             <Card>
               <Card.Header>Sign Up</Card.Header>
               <Card.Body>
-                <SignUpForm onHandleShow={onHandleShow}/>
+                <SignUpForm
+                addUserCallBack={addUserCallBack}
+                onHandleShow={onHandleShow}/>
               </Card.Body>
             </Card>
           </Col>
