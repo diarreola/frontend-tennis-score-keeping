@@ -21,9 +21,10 @@ const SignUpForm = () => {
     setError('')
 
     try {
-      await createUser(formFields.email, formFields.password)
+      await createUser(formFields.email, formFields.password);
     } catch (e) {
       setError(e.message)
+      console.log(e.message)
     }
 
     // call back to api
@@ -71,7 +72,6 @@ const SignUpForm = () => {
         <Form.Group className="mb-3" controlId="formFirstName">
           <Form.Label>First Name</Form.Label>
           <Form.Control
-            required
             type="text"
             placeholder="First Name"
             value={formFields.firstName}
@@ -80,7 +80,6 @@ const SignUpForm = () => {
         <Form.Group className="mb-3" controlId="formLastName">
           <Form.Label>Last Name</Form.Label>
           <Form.Control
-            required
             type="text"
             placeholder="Last Name"
             value={formFields.lastName}
@@ -92,7 +91,7 @@ const SignUpForm = () => {
             required
             type="email"
             placeholder="Enter email"
-            value={formFields.firstName}
+            value={formFields.email}
             onChange={onEmailChange}/>
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
@@ -104,7 +103,7 @@ const SignUpForm = () => {
             required
             type="password"
             placeholder="Password"
-            value={formFields.firstName}
+            value={formFields.password}
             onChange={onPasswordNameChange}/>
         </Form.Group>
         <Button variant="primary" type="submit">

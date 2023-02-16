@@ -8,7 +8,7 @@ import { getAuth } from 'firebase/auth';
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 const retrieveAPIKeys = () => {
-  return {
+  const envVars = {
     apiKey: process.env.REACT_APP_FB_API_KEY,
     authDomain: process.env.REACT_APP_AUTH_DOMAIN,
     projectId: process.env.REACT_APP_PROJECT_ID,
@@ -16,6 +16,7 @@ const retrieveAPIKeys = () => {
     messagingSenderId: process.env.REACT_APP_MESSENGER_SENDER_ID,
     appId: process.env.REACT_APP_APP_ID
   }
+  return envVars
 }
 
 // Your web app's Firebase configuration
@@ -30,5 +31,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth;
+export const auth = getAuth(app);
 export default app;
