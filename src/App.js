@@ -2,14 +2,26 @@
 import './App.css';
 import { React, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
+import SignUp from './pages/Auth/SignUp';
+import SignIn from './pages/Auth/SignIn';
+import {Routes, Route} from 'react-router-dom'
 import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
+import { AuthContextProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import ErrorModal from './components/ErrorModal';
+
 
 function App() {
   const [players, setPlayers] = useState(playersData);
   const [matches, setMatches] = useState(matchesData);
+  const [users, setUsers] = useState([]);
+  const [showModal, setShowModal] = useState({ show: false, message: '' });
 
-  
+  const handleClose = () => setShowModal({ show: false, message: '' });
+  const handleShow = (errorMessage) =>
+    setShowModal({ show: true, message: errorMessage });
+
   const addPlayers = (newPlayer) => {
     const newPlayers = [...players];
 
@@ -52,14 +64,43 @@ function App() {
     }
   };
 
+  const addUser = (newUser) => {
+    const newUsers = [...users];
+
+    // TODO: Remove when accessing API
+    const nextId = Math.max(...newUsers.map(player => player.id)) + 1;
+
+    newUsers.push({
+      id: nextId,
+      first_name: newUser.firstName,
+      last_name: newUser.lastName,
+      email: newUser.email
+    });
+
+    setUsers(newUsers);
+  };
+
   return (
     <div className="App">
-      <Dashboard
-      getPlayerNameFromId={getPlayerNameFromId}
-      addPlayersCallBack={addPlayers}
-      addMatchCallBack={addMatch}
-      matches={matches}
-      players={players}/>
+      <AuthContextProvider>
+        <Routes>
+          <Route path='/' element={<SignIn onHandleShow={handleShow}/>} />
+          <Route path='/signup' element={<SignUp
+            addUserCallBack={addUser}
+            onHandleShow={handleShow}/>} />
+          <Route path='/dashboard' element={
+            <ProtectedRoute>
+              <Dashboard
+                getPlayerNameFromId={getPlayerNameFromId}
+                addPlayersCallBack={addPlayers}
+                addMatchCallBack={addMatch}
+                // onHandleShow={handleShow}
+                matches={matches}
+                players={players}/>
+            </ProtectedRoute>}/>
+        </Routes>
+      </AuthContextProvider>
+      <ErrorModal showModal={showModal} onHandleClose={handleClose} />
     </div>
   );
 }
