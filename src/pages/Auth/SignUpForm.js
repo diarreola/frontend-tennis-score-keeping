@@ -2,7 +2,7 @@ import { UserAuth } from '../../context/AuthContext';
 import {React, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import {Link} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignUpForm = () => {
   // add first name and last name
@@ -13,8 +13,8 @@ const SignUpForm = () => {
     password: ''
   });
   const [error, setError] = useState('')
-
   const {createUser} = UserAuth();
+  const navigate = useNavigate();
 
   const onSubmitForm = async (event) => {
     event.preventDefault();
@@ -22,9 +22,10 @@ const SignUpForm = () => {
 
     try {
       await createUser(formFields.email, formFields.password);
+      navigate('/dashboard');
     } catch (e) {
-      setError(e.message)
-      console.log(e.message)
+      setError(e.message);
+      console.log(e.message);
     }
 
     // call back to api
