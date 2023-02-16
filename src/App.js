@@ -68,7 +68,7 @@ function App() {
       <AuthContextProvider>
         <Routes>
           <Route path='/' element={<SignIn onHandleShow={handleShow}/>} />
-          <Route path='/signup' element={<SignUp />} />
+          <Route path='/signup' element={<SignUp onHandleShow={handleShow}/>} />
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <Dashboard

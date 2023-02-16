@@ -10,7 +10,6 @@ const SignInForm = ({onHandleShow}) => {
     password: ''
   });
 
-  const [error, setError] = useState('')
   const { signIn } = UserAuth();
   const navigate = useNavigate();
 
@@ -30,15 +29,13 @@ const SignInForm = ({onHandleShow}) => {
 
   const onSubmitForm = async (event) => {
     event.preventDefault();
-    setError('')
 
     try {
       await signIn(formFields.email, formFields.password);
       navigate('/dashboard');
     } catch (e) {
-      setError(e.message);
       console.log(e.message);
-      // add error modal
+
       onHandleShow('Email or password incorrect, Try again')
     }
     // call back to api

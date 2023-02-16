@@ -16,8 +16,7 @@ const SignIn = ({onHandleShow}) => {
             <Card>
               <Card.Header>Sign In</Card.Header>
               <Card.Body>
-                <SignInForm
-                onHandleShow={onHandleShow}/>
+                <SignInForm onHandleShow={onHandleShow}/>
               </Card.Body>
             </Card>
           </Col>

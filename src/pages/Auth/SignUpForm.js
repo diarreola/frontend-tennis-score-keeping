@@ -4,27 +4,24 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 
-const SignUpForm = () => {
+const SignUpForm = ({onHandleShow}) => {
   const [formFields, setFormFields] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: ''
   });
-  const [error, setError] = useState('')
   const {createUser} = UserAuth();
   const navigate = useNavigate();
 
   const onSubmitForm = async (event) => {
     event.preventDefault();
-    setError('')
 
     try {
       await createUser(formFields.email, formFields.password);
       navigate('/dashboard');
     } catch (e) {
-      setError(e.message);
-      console.log(e.message);
+      onHandleShow(`Sign up error: ${e.message}`)
     }
 
     // call back to api
@@ -72,6 +69,7 @@ const SignUpForm = () => {
         <Form.Group className="mb-3" controlId="formFirstName">
           <Form.Label>First Name</Form.Label>
           <Form.Control
+            required
             type="text"
             placeholder="First Name"
             value={formFields.firstName}
@@ -80,6 +78,7 @@ const SignUpForm = () => {
         <Form.Group className="mb-3" controlId="formLastName">
           <Form.Label>Last Name</Form.Label>
           <Form.Control
+            required
             type="text"
             placeholder="Last Name"
             value={formFields.lastName}

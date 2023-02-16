@@ -1,11 +1,11 @@
-import {React, useState} from 'react'
+import {React} from 'react'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import SignUpForm from './SignUpForm';
 
-const SignUp = () => {
+const SignUp = ({onHandleShow}) => {
   return (
     <div>
       <Container>
@@ -16,7 +16,7 @@ const SignUp = () => {
             <Card>
               <Card.Header>Sign Up</Card.Header>
               <Card.Body>
-                <SignUpForm />
+                <SignUpForm onHandleShow={onHandleShow}/>
               </Card.Body>
             </Card>
           </Col>
