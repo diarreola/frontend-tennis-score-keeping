@@ -1,3 +1,4 @@
+import './Dashboard.css';
 import NewMatchForm from './NewMatchForm';
 import PlayerForm from './PlayerForm'
 import PlayerList from './PlayerList';
