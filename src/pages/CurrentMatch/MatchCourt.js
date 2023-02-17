@@ -1,7 +1,6 @@
 import React from 'react';
 import './MatchCourt.css'
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert';
 
 // From this codepen: https://codepen.io/vtrpldn/pen/POKvZM
 const MatchCourt = () => {
