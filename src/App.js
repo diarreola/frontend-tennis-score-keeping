@@ -4,7 +4,7 @@ import { React, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
-import {Routes, Route } from 'react-router-dom'
+import {Routes, Route, useNavigate } from 'react-router-dom'
 import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
 import { AuthContextProvider } from './context/AuthContext';
@@ -18,6 +18,7 @@ function App() {
   const [matches, setMatches] = useState(matchesData);
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState({ show: false, message: '' });
+  const navigate = useNavigate();
 
   const handleClose = () => setShowModal({ show: false, message: '' });
   const handleShow = (errorMessage) =>
@@ -53,6 +54,9 @@ function App() {
     const newMatches = [...matches];
     newMatches.push(newMatch);
     setMatches(newMatches);
+
+    // only navigate if it works
+    navigate('/currentmatch');
 
     // when api call works, navigate to currentmatch
   };
