@@ -12,8 +12,11 @@ const CurrentMatch = () => {
   return (
     <div>
       <UserNavbar></UserNavbar>
-      <MatchScoreTable></MatchScoreTable>
+      
       <Container>
+        <Row>
+          <Col><MatchScoreTable></MatchScoreTable></Col>
+        </Row>
         <Row>
           <Col><MatchCourt /></Col>
         </Row>
