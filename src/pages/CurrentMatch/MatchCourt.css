@@ -1,0 +1,8 @@
+/* .body {
+  height: 100vh;
+} */
+
+.court-grid.card {
+  height: 100%;
+  /* background-color: red; */
+}

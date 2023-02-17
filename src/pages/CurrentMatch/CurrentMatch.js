@@ -5,14 +5,17 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import MatchControlFooter from './MatchControlFooter';
+import MatchCourt from './MatchCourt';
+import MatchScoreTable from './MatchScoreTable';
 
 const CurrentMatch = () => {
   return (
     <div>
       <UserNavbar></UserNavbar>
+      <MatchScoreTable></MatchScoreTable>
       <Container>
         <Row>
-          <Col>1 of 1</Col>
+          <Col><MatchCourt /></Col>
         </Row>
         <Row>
           <Col><MatchButtons /></Col>
