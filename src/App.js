@@ -4,13 +4,13 @@ import { React, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
-import {Routes, Route} from 'react-router-dom'
+import {Routes, Route } from 'react-router-dom'
 import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './components/ErrorModal';
-
+import MatchStats from './pages/MatchStats/MatchStats';
 
 function App() {
   const [players, setPlayers] = useState(playersData);
@@ -52,6 +52,8 @@ function App() {
     const newMatches = [...matches];
     newMatches.push(newMatch);
     setMatches(newMatches);
+
+    // when api call works, navigate to currentmatch
   };
 
   const getPlayerNameFromId = (playerId) => {
@@ -88,16 +90,16 @@ function App() {
           <Route path='/signup' element={<SignUp
             addUserCallBack={addUser}
             onHandleShow={handleShow}/>} />
-          <Route path='/dashboard' element={
+          <Route path='/dashboard/*' element={
             <ProtectedRoute>
               <Dashboard
                 getPlayerNameFromId={getPlayerNameFromId}
                 addPlayersCallBack={addPlayers}
                 addMatchCallBack={addMatch}
-                // onHandleShow={handleShow}
                 matches={matches}
                 players={players}/>
             </ProtectedRoute>}/>
+            <Route path='/matchstats' element={<ProtectedRoute><MatchStats /></ProtectedRoute>} />
         </Routes>
       </AuthContextProvider>
       <ErrorModal showModal={showModal} onHandleClose={handleClose} />

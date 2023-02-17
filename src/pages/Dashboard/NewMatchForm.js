@@ -20,6 +20,7 @@ function NewMatchForm({addMatchCallBack, players}) {
 
     addMatchCallBack(formFields);
 
+
     setFormFields({
       playerA: 0,
       playerB: 0,

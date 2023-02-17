@@ -6,29 +6,12 @@ import PastMatchesTable from './PastMatchesTable'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { UserAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import UserNavbar from '../../components/UserNavbar';
 
 function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
-  const { user, logout } = UserAuth();
-  console.log('user', user)
-  console.log('logout', logout)
-  const navigate = useNavigate();
-
-  const onHandleLogout = async () => {
-    try {
-      await logout();
-      navigate('/');
-    } catch (e) {
-      console.log(e.message)
-    }
-  };
-
   return (
     <div>
-      <UserNavbar user={user} onHandleLogout={onHandleLogout}></UserNavbar>
-      {/* <button onClick={onHandleLogout} className='user-logout'>logout</button>  */}
+      <UserNavbar></UserNavbar>
       <section>
       <div className="Dashboard">
         <Container fluid>

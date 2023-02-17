@@ -2,8 +2,22 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { UserAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const UserNavbar = ({user, onHandleLogout}) => {
+const UserNavbar = () => {
+  const { user, logout } = UserAuth();
+  const navigate = useNavigate();
+
+  const onHandleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (e) {
+      console.log(e.message)
+    }
+  };
+
   return (
     <Navbar bg="dark" variant="dark">
       <Container>
