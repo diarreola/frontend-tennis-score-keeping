@@ -11,6 +11,7 @@ import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './components/ErrorModal';
 import MatchStats from './pages/MatchStats/MatchStats';
+import CurrentMatch from './pages/CurrentMatch/CurrentMatch';
 
 function App() {
   const [players, setPlayers] = useState(playersData);
@@ -100,6 +101,7 @@ function App() {
                 players={players}/>
             </ProtectedRoute>}/>
             <Route path='/matchstats' element={<ProtectedRoute><MatchStats /></ProtectedRoute>} />
+            <Route path='/currentmatch' element={<ProtectedRoute><CurrentMatch /></ProtectedRoute>} />
         </Routes>
       </AuthContextProvider>
       <ErrorModal showModal={showModal} onHandleClose={handleClose} />
