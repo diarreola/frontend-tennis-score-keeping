@@ -19,6 +19,7 @@ function NewMatchForm({addMatchCallBack, players}) {
     event.preventDefault();
 
     addMatchCallBack(formFields);
+    
 
     setFormFields({
       playerA: 0,
