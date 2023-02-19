@@ -12,11 +12,33 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './components/ErrorModal';
 import MatchStats from './pages/MatchStats/MatchStats';
 import CurrentMatch from './pages/CurrentMatch/CurrentMatch';
+import axios from 'axios';
+
+const kBaseUrl = 'https://tennis-pal-backend.herokuapp.com/';
+
+const registerUser = (userData) => {
+  const requestBody = {
+    first_name: userData.firstName,
+    last_name: userData.lastName,
+    email: userData.email,
+    password: 'hidden'
+  }
+
+  console.log('requestBody', requestBody)
+  return axios
+    .post(`${kBaseUrl}users/user`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
 function App() {
   const [players, setPlayers] = useState(playersData);
   const [matches, setMatches] = useState(matchesData);
-  const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});  // access only for creating a match and player
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
 
@@ -72,19 +94,14 @@ function App() {
   };
 
   const addUser = (newUser) => {
-    const newUsers = [...users];
-
-    // TODO: Remove when accessing API
-    const nextId = Math.max(...newUsers.map(player => player.id)) + 1;
-
-    newUsers.push({
-      id: nextId,
-      first_name: newUser.firstName,
-      last_name: newUser.lastName,
-      email: newUser.email
-    });
-
-    setUsers(newUsers);
+    registerUser(newUser)
+      .then((newUserData) => {
+        setCurrentUser(newUserData.user_id)
+      })
+      .catch((error) => {
+        console.log(error);
+        handleShow('Cannot create user')
+      });
   };
 
   return (
