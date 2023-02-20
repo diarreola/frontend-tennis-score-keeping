@@ -5,7 +5,7 @@ import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
 import {Routes, Route, useNavigate } from 'react-router-dom'
-import playersData from './data/player_data.json'
+// import playersData from './data/player_data.json'
 import matchesData from './data/past_matches.json'
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -35,10 +35,31 @@ const registerUser = (userData) => {
     });
 }
 
+const registerPlayer = (playerData, currentUser) => {
+  const requestBody = {
+    first_name: playerData.firstName,
+    last_name: playerData.lastName,
+    date_of_birth: playerData.dob,
+    serve_style: playerData.serveStyle,
+    utr: playerData.utr
+  }
+
+  console.log('requestBody', requestBody)
+  console.log('currentuser', currentUser)
+  return axios
+    .post(`${kBaseUrl}users/${currentUser}/player`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 function App() {
-  const [players, setPlayers] = useState(playersData);
+  const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState(matchesData);
-  const [currentUser, setCurrentUser] = useState({});  // access only for creating a match and player
+  const [currentUser, setCurrentUser] = useState(0);  // access only for creating a match and player
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
 
@@ -47,21 +68,28 @@ function App() {
     setShowModal({ show: true, message: errorMessage });
 
   const addPlayers = (newPlayer) => {
-    const newPlayers = [...players];
 
-    // TODO: Remove when accessing API
-    const nextId = Math.max(...newPlayers.map(player => player.id)) + 1;
+    registerPlayer(newPlayer, currentUser)
+    .then((newPlayerData) => {
 
-    newPlayers.push({
-        id: nextId,
-        first_name: newPlayer.firstName,
-        last_name: newPlayer.lastName,
-        date_of_birth: newPlayer.dateOfBirth,
+      const newPlayers = [...players];
+
+      console.log('newPlayerData.player_id', newPlayerData.Player_id);
+      newPlayers.push({
+        id: newPlayerData.Player_id,
+        firstName: newPlayer.firstName,
+        lastName: newPlayer.lastName,
+        dob: newPlayer.dob,
         utr: newPlayer.utr,
-        serve_style: newPlayer.serveStyle
+        serveStyle: newPlayer.serveStyle
+      });
+      console.log('newplayer array', newPlayers)
+      setPlayers(newPlayers);
+    })
+    .catch((error) => {
+      console.log(error);
+      handleShow('Cannot create player')
     });
-
-    setPlayers(newPlayers);
   };
 
   const addMatch = (newMatchData) => {
@@ -96,12 +124,14 @@ function App() {
   const addUser = (newUser) => {
     registerUser(newUser)
       .then((newUserData) => {
-        setCurrentUser(newUserData.user_id)
+        console.log('newUserData', newUserData)
+        setCurrentUser(newUserData.user_id);
       })
       .catch((error) => {
         console.log(error);
-        handleShow('Cannot create user')
+        handleShow('Cannot create user');
       });
+    // console.log('currentuser', currentUser)
   };
 
   return (
