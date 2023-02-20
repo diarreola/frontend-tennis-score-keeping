@@ -7,8 +7,18 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import UserNavbar from '../../components/UserNavbar';
+import { useParams } from 'react-router-dom';
+import { React, useEffect } from 'react';
 
-function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
+
+function Dashboard({matches, players, displayAllPlayers, addPlayersCallBack, addMatchCallBack, getPlayerNameFromId}) {
+  const { userId } = useParams();
+
+  useEffect(() => {
+    displayAllPlayers(userId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div>
       <UserNavbar></UserNavbar>
@@ -16,8 +26,8 @@ function Dashboard({matches, players, addPlayersCallBack, addMatchCallBack, getP
       <div className="Dashboard">
         <Container fluid>
           <Row>
-            <Col sm><NewMatchForm addMatchCallBack={addMatchCallBack} players={players}/></Col>
-            <Col sm><PlayerForm addPlayersCallBack={addPlayersCallBack}/></Col>
+            <Col sm><NewMatchForm userId={userId} addMatchCallBack={addMatchCallBack} players={players}/></Col>
+            <Col sm><PlayerForm userId={userId} addPlayersCallBack={addPlayersCallBack}/></Col>
             <Col sm><PlayerList players={players}/></Col>
           </Row>
           <Row>

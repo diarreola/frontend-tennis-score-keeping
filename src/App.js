@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 import './App.css';
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
-import {Routes, Route, useNavigate } from 'react-router-dom'
+import {Routes, Route, useNavigate, useParams } from 'react-router-dom';
 // import playersData from './data/player_data.json'
 // import matchesData from './data/past_matches.json'
 import { AuthContextProvider } from './context/AuthContext';
@@ -15,6 +15,17 @@ import CurrentMatch from './pages/CurrentMatch/CurrentMatch';
 import axios from 'axios';
 
 const kBaseUrl = 'https://tennis-pal-backend.herokuapp.com/';
+
+const transformPlayerResponse = (player) => {
+  const {
+    first_name: firstName,
+    last_name: lastName,
+    serve_style: serveStyle,
+    date_of_birth: dob,
+    id
+  } = player;
+  return { firstName, lastName, serveStyle, dob, id };
+};
 
 const registerUser = (userData) => {
   const requestBody = {
@@ -77,20 +88,29 @@ const registerNewMatch = (newMatchData, currentUser) => {
     });
 }
 
+const fetchAllPlayersByUser = (currentUser) => {
+  return axios
+    .get(`${kBaseUrl}users/${currentUser}/players`)
+    .then((response) => {
+      console.log('res', response.data)
+      return response.data.map(transformPlayerResponse)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 function App() {
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
-  const [currentUser, setCurrentUser] = useState(0);  // access only for creating a match and player
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
-
   const handleClose = () => setShowModal({ show: false, message: '' });
   const handleShow = (errorMessage) =>
     setShowModal({ show: true, message: errorMessage });
 
-  const addPlayers = (newPlayer) => {
-
-    registerPlayer(newPlayer, currentUser)
+  const addPlayers = (newPlayer, userId) => {
+    registerPlayer(newPlayer, userId)
     .then((newPlayerData) => {
 
       const newPlayers = [...players];
@@ -113,9 +133,9 @@ function App() {
     });
   };
 
-  const addMatch = (newMatch) => {
+  const addMatch = (newMatch, userId) => {
 
-    registerNewMatch(newMatch, currentUser)
+    registerNewMatch(newMatch, userId)
     .then((newMatchData) => {
 
       const newMatches = [...matches];
@@ -129,17 +149,14 @@ function App() {
         numGames: newMatch.numGames,
         matchName: newMatch.matchName
       });
-      console.log('newmatches', newMatches)
       setMatches(newMatches);
-      console.log('setmatche', matches)
+      return newMatchData.New_match_id
     })
     .catch((error) => {
       console.log(error);
       handleShow('Cannot create current match')
     });
 
-    // // only navigate if it works
-    // navigate('/currentmatch');
   };
 
   const getPlayerNameFromId = (playerId) => {
@@ -155,14 +172,19 @@ function App() {
   const addUser = (newUser) => {
     registerUser(newUser)
       .then((newUserData) => {
-        console.log('newUserData', newUserData)
-        setCurrentUser(newUserData.user_id);
+        navigate(`/dashboard/${newUserData.user_id}`);
       })
       .catch((error) => {
         console.log(error);
         handleShow('Cannot create user');
       });
-    // console.log('currentuser', currentUser)
+  };
+
+  const displayAllPlayers = (userId) => {
+    fetchAllPlayersByUser(userId).then((players) => {
+      console.log('players', players)
+      setPlayers(players);
+    });
   };
 
   return (
@@ -173,9 +195,10 @@ function App() {
           <Route path='/signup' element={<SignUp
             addUserCallBack={addUser}
             onHandleShow={handleShow}/>} />
-          <Route path='/dashboard/*' element={
+          <Route path='/dashboard/:userId' element={
             <ProtectedRoute>
               <Dashboard
+                displayAllPlayers={displayAllPlayers}
                 getPlayerNameFromId={getPlayerNameFromId}
                 addPlayersCallBack={addPlayers}
                 addMatchCallBack={addMatch}
@@ -183,7 +206,7 @@ function App() {
                 players={players}/>
             </ProtectedRoute>}/>
             <Route path='/matchstats' element={<ProtectedRoute><MatchStats /></ProtectedRoute>} />
-            <Route path='/currentmatch' element={<ProtectedRoute><CurrentMatch /></ProtectedRoute>} />
+            <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch /></ProtectedRoute>} />
         </Routes>
       </AuthContextProvider>
       <ErrorModal showModal={showModal} onHandleClose={handleClose} />

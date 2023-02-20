@@ -24,7 +24,6 @@ const SignUpForm = ({onHandleShow, addUserCallBack}) => {
         lastName: formFields.lastName,
         email: formFields.email,
       })
-      navigate('/dashboard');
     } catch (e) {
       onHandleShow(`Sign up error: ${e.message}`)
     }
