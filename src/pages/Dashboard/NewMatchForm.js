@@ -17,14 +17,14 @@ function NewMatchForm({userId, addMatchCallBack, players}) {
   const [disableButton, setDisableButton] = useState(true);
   const navigate = useNavigate();
 
-  const onFormSubmit = (event) => {
+  const onFormSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const newMatchId = addMatchCallBack(formFields, userId);
-      navigate(`/currentmatch/${userId}/match/${newMatchId}`);
+      await addMatchCallBack(formFields, userId) 
     } catch(e) {
       console.log('error:', e)
+      return
     }
     
 

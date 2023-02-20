@@ -4,7 +4,6 @@ import Card from 'react-bootstrap/Card';
 
 function PlayerList(props) {
   const playerComponents = props.players.map((player) => {
-    console.log('playrs in list', props.players)
     return (
         <div key={player.id}>
             <Player

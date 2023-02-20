@@ -33,7 +33,6 @@ const registerUser = (userData) => {
     password: 'hidden'
   }
 
-  console.log('requestBody', requestBody)
   return axios
     .post(`${kBaseUrl}users/user`, requestBody)
     .then((response) => {
@@ -53,8 +52,6 @@ const registerPlayer = (playerData, currentUser) => {
     utr: playerData.utr
   }
 
-  console.log('requestBody', requestBody)
-  console.log('currentuser', currentUser)
   return axios
     .post(`${kBaseUrl}users/${currentUser}/player`, requestBody)
     .then((response) => {
@@ -74,10 +71,19 @@ const registerNewMatch = (newMatchData, currentUser) => {
     player_b_id: newMatchData.playerB
   }
 
-  console.log('requestBody', requestBody)
-  console.log('currentuser', currentUser)
   return axios
     .post(`${kBaseUrl}users/${currentUser}/match`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const fetchMatchById = (matchId) => {
+  return axios
+    .get(`${kBaseUrl}matches/${matchId}`)
     .then((response) => {
       return response.data
     })
@@ -90,7 +96,6 @@ const fetchAllPlayersByUser = (currentUser) => {
   return axios
     .get(`${kBaseUrl}users/${currentUser}/players`)
     .then((response) => {
-      console.log('res', response.data)
       return response.data.map(transformPlayerResponse)
     })
     .catch((error) => {
@@ -101,6 +106,7 @@ const fetchAllPlayersByUser = (currentUser) => {
 function App() {
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
+  const [currentMatch, setCurrentMatch] = useState({});
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
   const handleClose = () => setShowModal({ show: false, message: '' });
@@ -112,8 +118,6 @@ function App() {
     .then((newPlayerData) => {
 
       const newPlayers = [...players];
-
-      console.log('newPlayerData.player_id', newPlayerData.Player_id);
       newPlayers.push({
         id: newPlayerData.Player_id,
         firstName: newPlayer.firstName,
@@ -122,7 +126,6 @@ function App() {
         utr: newPlayer.utr,
         serveStyle: newPlayer.serveStyle
       });
-      console.log('newplayer array', newPlayers)
       setPlayers(newPlayers);
     })
     .catch((error) => {
@@ -132,13 +135,10 @@ function App() {
   };
 
   const addMatch = (newMatch, userId) => {
-
     registerNewMatch(newMatch, userId)
     .then((newMatchData) => {
 
       const newMatches = [...matches];
-
-      console.log('newMAtchData', newMatchData);
       newMatches.push({
         id: newMatchData.New_match_id,
         playerA: newMatch.playerA,
@@ -148,20 +148,19 @@ function App() {
         matchName: newMatch.matchName
       });
       setMatches(newMatches);
-      return newMatchData.New_match_id
+      navigate(`/currentmatch/${userId}/match/${newMatchData.New_match_id}`);
     })
     .catch((error) => {
       console.log(error);
       handleShow('Cannot create current match')
     });
-
   };
 
   const getPlayerNameFromId = (playerId) => {
     let playerName = '';
     for (const player of players) {
       if (player.id === playerId) {
-        playerName = player.first_name + ' ' + player.last_name
+        playerName = player.firstName + ' ' + player.lastName
         return playerName
       }
     }
@@ -180,8 +179,13 @@ function App() {
 
   const displayAllPlayers = (userId) => {
     fetchAllPlayersByUser(userId).then((players) => {
-      console.log('players', players)
       setPlayers(players);
+    });
+  };
+
+  const getMatch = (matchId) => {
+    fetchMatchById(matchId).then((match) => {
+      setCurrentMatch(match);
     });
   };
 
@@ -204,7 +208,10 @@ function App() {
                 players={players}/>
             </ProtectedRoute>}/>
             <Route path='/matchstats' element={<ProtectedRoute><MatchStats /></ProtectedRoute>} />
-            <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch /></ProtectedRoute>} />
+            <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch
+                match={currentMatch}
+                getMatchCallBack={getMatch}
+                getPlayerNameFromId={getPlayerNameFromId}/></ProtectedRoute>} />
         </Routes>
       </AuthContextProvider>
       <ErrorModal showModal={showModal} onHandleClose={handleClose} />
