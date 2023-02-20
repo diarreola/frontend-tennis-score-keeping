@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import './App.css';
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
@@ -211,7 +211,8 @@ function App() {
             <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch
                 match={currentMatch}
                 getMatchCallBack={getMatch}
-                getPlayerNameFromId={getPlayerNameFromId}/></ProtectedRoute>} />
+                getPlayerNameFromId={getPlayerNameFromId}
+                displayAllPlayers={displayAllPlayers}/></ProtectedRoute>} />
         </Routes>
       </AuthContextProvider>
       <ErrorModal showModal={showModal} onHandleClose={handleClose} />

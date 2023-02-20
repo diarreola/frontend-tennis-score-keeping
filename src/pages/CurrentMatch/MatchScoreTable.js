@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 import MatchScoreSetCol from './MatchScoreSetCol';
 import MatchScoreSetRow from './MatchScoreSetRow';
 
-const MatchScoreTable = ({match, playerAName, playerBName}) => {
+const MatchScoreTable = ({match, playerA, playerB}) => {
   // get sets, create dynamic sets
   const numSets = match.no_of_sets;
   const numGames = match.no_of_gamesperset;
@@ -51,12 +51,12 @@ const MatchScoreTable = ({match, playerAName, playerBName}) => {
       </thead>
       <tbody>
         <tr>
-          <td>player a:{playerAName}</td>
+          <td>player a: {playerA}</td>
           {setRowComponentsPlayerA}
           <td>-</td>
         </tr>
         <tr>
-          <td>player b: {playerBName}</td>
+          <td>player b: {playerB}</td>
           {setRowComponentsPlayerB}
           <td>-</td>
         </tr>

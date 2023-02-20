@@ -9,11 +9,12 @@ import MatchCourt from './MatchCourt';
 import MatchScoreTable from './MatchScoreTable';
 import { useParams } from 'react-router-dom';
 
-const CurrentMatch = ({match, getMatchCallBack, getPlayerNameFromId}) => {
+const CurrentMatch = ({match, getMatchCallBack, getPlayerNameFromId, displayAllPlayers}) => {
   const { userId, matchId } = useParams();
 
   useEffect(() => {
     getMatchCallBack(matchId);
+    displayAllPlayers(userId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -27,15 +28,16 @@ const CurrentMatch = ({match, getMatchCallBack, getPlayerNameFromId}) => {
         <Row>
           <Col><MatchScoreTable
             match={match}
-            playerAName={playerAName}
-            playerBName={playerBName}></MatchScoreTable></Col>
+            playerA={playerAName}
+            playerB={playerBName}>
+            </MatchScoreTable></Col>
         </Row>
         <Row>
           <Col><MatchCourt /></Col>
         </Row>
         <Row>
           <Col><MatchButtons
-            playerName={playerAName}/></Col>
+              playerName={playerAName}/></Col>
           <Col><MatchButtons
               playerName={playerBName}/></Col>
         </Row>
