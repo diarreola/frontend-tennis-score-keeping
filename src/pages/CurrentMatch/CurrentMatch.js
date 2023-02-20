@@ -16,25 +16,27 @@ const CurrentMatch = ({match, getMatchCallBack, getPlayerNameFromId}) => {
     getMatchCallBack(matchId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const playerAName = getPlayerNameFromId(match.player_a_id)
+  const playerBName = getPlayerNameFromId(match.player_b_id)
   return (
     <div>
       <UserNavbar></UserNavbar>
       
       <Container>
         <Row>
-          <Col><MatchScoreTable></MatchScoreTable></Col>
+          <Col><MatchScoreTable
+            playerAName={playerAName}
+            playerBName={playerBName}></MatchScoreTable></Col>
         </Row>
         <Row>
           <Col><MatchCourt /></Col>
         </Row>
         <Row>
-          <Col><MatchButtons match={match}
-              matchPlayerId={match.player_a_id}
-              getPlayerNameFromId={getPlayerNameFromId}/></Col>
           <Col><MatchButtons
-              match={match}
-              matchPlayerId={match.player_b_id}
-              getPlayerNameFromId={getPlayerNameFromId}/></Col>
+            playerName={playerAName}/></Col>
+          <Col><MatchButtons
+              playerName={playerBName}/></Col>
         </Row>
       </Container>
       <MatchControlFooter></MatchControlFooter>

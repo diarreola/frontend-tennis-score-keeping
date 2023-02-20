@@ -1,7 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 
-const MatchScoreTable = () => {
+const MatchScoreTable = ({playerAName, playerBName}) => {
   return (
     <Table striped bordered hover variant="dark">
       <thead>
@@ -14,13 +14,13 @@ const MatchScoreTable = () => {
       </thead>
       <tbody>
         <tr>
-          <td>player a</td>
+          <td>player a:{playerAName}</td>
           <td>Mark</td>
           <td>Otto</td>
           <td>@mdo</td>
         </tr>
         <tr>
-          <td>player b</td>
+          <td>player b: {playerBName}</td>
           <td>Jacob</td>
           <td>Thornton</td>
           <td>@fat</td>
