@@ -6,7 +6,7 @@ import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
 import {Routes, Route, useNavigate } from 'react-router-dom'
 // import playersData from './data/player_data.json'
-import matchesData from './data/past_matches.json'
+// import matchesData from './data/past_matches.json'
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './components/ErrorModal';
@@ -56,9 +56,30 @@ const registerPlayer = (playerData, currentUser) => {
     });
 }
 
+const registerNewMatch = (newMatchData, currentUser) => {
+  const requestBody = {
+    match_name: newMatchData.matchName,
+    no_of_gamesperset: newMatchData.numGames,
+    no_of_sets: newMatchData.numSets,
+    player_a_id: newMatchData.playerA,
+    player_b_id: newMatchData.playerB
+  }
+
+  console.log('requestBody', requestBody)
+  console.log('currentuser', currentUser)
+  return axios
+    .post(`${kBaseUrl}users/${currentUser}/match`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 function App() {
   const [players, setPlayers] = useState([]);
-  const [matches, setMatches] = useState(matchesData);
+  const [matches, setMatches] = useState([]);
   const [currentUser, setCurrentUser] = useState(0);  // access only for creating a match and player
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
@@ -92,23 +113,33 @@ function App() {
     });
   };
 
-  const addMatch = (newMatchData) => {
-    const newMatch = {
-      player_a: newMatchData.playerA,
-      player_b: newMatchData.playerB,
-      no_of_sets: newMatchData.numSets,
-      no_of_gamesperset: newMatchData.numGames,
-      match_name: newMatchData.matchName
-    };
+  const addMatch = (newMatch) => {
 
-    const newMatches = [...matches];
-    newMatches.push(newMatch);
-    setMatches(newMatches);
+    registerNewMatch(newMatch, currentUser)
+    .then((newMatchData) => {
 
-    // only navigate if it works
-    navigate('/currentmatch');
+      const newMatches = [...matches];
 
-    // when api call works, navigate to currentmatch
+      console.log('newMAtchData', newMatchData);
+      newMatches.push({
+        id: newMatchData.New_match_id,
+        playerA: newMatch.playerA,
+        playerB: newMatch.playerB,
+        numSets: newMatch.numSets,
+        numGames: newMatch.numGames,
+        matchName: newMatch.matchName
+      });
+      console.log('newmatches', newMatches)
+      setMatches(newMatches);
+      console.log('setmatche', matches)
+    })
+    .catch((error) => {
+      console.log(error);
+      handleShow('Cannot create current match')
+    });
+
+    // // only navigate if it works
+    // navigate('/currentmatch');
   };
 
   const getPlayerNameFromId = (playerId) => {

@@ -33,6 +33,7 @@ const SignInForm = ({onHandleShow}) => {
     try {
       await signIn(formFields.email, formFields.password);
       navigate('/dashboard');
+      // retrieve user id again, 
     } catch (e) {
       console.log(e.message);
 

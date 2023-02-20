@@ -136,7 +136,7 @@ function NewMatchForm({addMatchCallBack, players}) {
             <Select
               options={players}
               values={[]}
-              labelField="first_name"
+              labelField="firstName"
               valueField="id"
               required
               multi
