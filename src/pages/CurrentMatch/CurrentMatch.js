@@ -26,6 +26,7 @@ const CurrentMatch = ({match, getMatchCallBack, getPlayerNameFromId}) => {
       <Container>
         <Row>
           <Col><MatchScoreTable
+            match={match}
             playerAName={playerAName}
             playerBName={playerBName}></MatchScoreTable></Col>
         </Row>
