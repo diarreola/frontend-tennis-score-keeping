@@ -1,12 +1,10 @@
 /* eslint-disable camelcase */
 import './App.css';
-import { React, useState, useEffect } from 'react';
+import { React, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
-import {Routes, Route, useNavigate, useParams } from 'react-router-dom';
-// import playersData from './data/player_data.json'
-// import matchesData from './data/past_matches.json'
+import {Routes, Route, useNavigate } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './components/ErrorModal';
