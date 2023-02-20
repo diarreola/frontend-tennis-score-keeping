@@ -1,90 +1,192 @@
 /* eslint-disable camelcase */
 import './App.css';
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import Dashboard from './pages/Dashboard/Dashboard'
 import SignUp from './pages/Auth/SignUp';
 import SignIn from './pages/Auth/SignIn';
-import {Routes, Route, useNavigate } from 'react-router-dom'
-import playersData from './data/player_data.json'
-import matchesData from './data/past_matches.json'
+import {Routes, Route, useNavigate } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorModal from './components/ErrorModal';
 import MatchStats from './pages/MatchStats/MatchStats';
 import CurrentMatch from './pages/CurrentMatch/CurrentMatch';
+import axios from 'axios';
+
+const kBaseUrl = 'https://tennis-pal-backend.herokuapp.com/';
+
+const transformPlayerResponse = (player) => {
+  const {
+    first_name: firstName,
+    last_name: lastName,
+    serve_style: serveStyle,
+    date_of_birth: dob,
+    id
+  } = player;
+  return { firstName, lastName, serveStyle, dob, id };
+};
+
+const registerUser = (userData) => {
+  const requestBody = {
+    first_name: userData.firstName,
+    last_name: userData.lastName,
+    email: userData.email,
+    password: 'hidden'
+  }
+
+  return axios
+    .post(`${kBaseUrl}users/user`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const registerPlayer = (playerData, currentUser) => {
+  const requestBody = {
+    first_name: playerData.firstName,
+    last_name: playerData.lastName,
+    date_of_birth: playerData.dob,
+    serve_style: playerData.serveStyle,
+    utr: playerData.utr
+  }
+
+  return axios
+    .post(`${kBaseUrl}users/${currentUser}/player`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const registerNewMatch = (newMatchData, currentUser) => {
+  const requestBody = {
+    match_name: newMatchData.matchName,
+    no_of_gamesperset: newMatchData.numGames,
+    no_of_sets: newMatchData.numSets,
+    player_a_id: newMatchData.playerA,
+    player_b_id: newMatchData.playerB
+  }
+
+  return axios
+    .post(`${kBaseUrl}users/${currentUser}/match`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const fetchMatchById = (matchId) => {
+  return axios
+    .get(`${kBaseUrl}matches/${matchId}`)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const fetchAllPlayersByUser = (currentUser) => {
+  return axios
+    .get(`${kBaseUrl}users/${currentUser}/players`)
+    .then((response) => {
+      return response.data.map(transformPlayerResponse)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
 function App() {
-  const [players, setPlayers] = useState(playersData);
-  const [matches, setMatches] = useState(matchesData);
-  const [users, setUsers] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [currentMatch, setCurrentMatch] = useState({});
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
-
   const handleClose = () => setShowModal({ show: false, message: '' });
   const handleShow = (errorMessage) =>
     setShowModal({ show: true, message: errorMessage });
 
-  const addPlayers = (newPlayer) => {
-    const newPlayers = [...players];
+  const addPlayers = (newPlayer, userId) => {
+    registerPlayer(newPlayer, userId)
+    .then((newPlayerData) => {
 
-    // TODO: Remove when accessing API
-    const nextId = Math.max(...newPlayers.map(player => player.id)) + 1;
-
-    newPlayers.push({
-        id: nextId,
-        first_name: newPlayer.firstName,
-        last_name: newPlayer.lastName,
-        date_of_birth: newPlayer.dateOfBirth,
+      const newPlayers = [...players];
+      newPlayers.push({
+        id: newPlayerData.Player_id,
+        firstName: newPlayer.firstName,
+        lastName: newPlayer.lastName,
+        dob: newPlayer.dob,
         utr: newPlayer.utr,
-        serve_style: newPlayer.serveStyle
+        serveStyle: newPlayer.serveStyle
+      });
+      setPlayers(newPlayers);
+    })
+    .catch((error) => {
+      console.log(error);
+      handleShow('Cannot create player')
     });
-
-    setPlayers(newPlayers);
   };
 
-  const addMatch = (newMatchData) => {
-    const newMatch = {
-      player_a: newMatchData.playerA,
-      player_b: newMatchData.playerB,
-      no_of_sets: newMatchData.numSets,
-      no_of_gamesperset: newMatchData.numGames,
-      match_name: newMatchData.matchName
-    };
+  const addMatch = (newMatch, userId) => {
+    registerNewMatch(newMatch, userId)
+    .then((newMatchData) => {
 
-    const newMatches = [...matches];
-    newMatches.push(newMatch);
-    setMatches(newMatches);
-
-    // only navigate if it works
-    navigate('/currentmatch');
-
-    // when api call works, navigate to currentmatch
+      const newMatches = [...matches];
+      newMatches.push({
+        id: newMatchData.New_match_id,
+        playerA: newMatch.playerA,
+        playerB: newMatch.playerB,
+        numSets: newMatch.numSets,
+        numGames: newMatch.numGames,
+        matchName: newMatch.matchName
+      });
+      setMatches(newMatches);
+      navigate(`/currentmatch/${userId}/match/${newMatchData.New_match_id}`);
+    })
+    .catch((error) => {
+      console.log(error);
+      handleShow('Cannot create current match')
+    });
   };
 
   const getPlayerNameFromId = (playerId) => {
     let playerName = '';
     for (const player of players) {
       if (player.id === playerId) {
-        playerName = player.first_name + ' ' + player.last_name
+        playerName = player.firstName + ' ' + player.lastName
         return playerName
       }
     }
   };
 
   const addUser = (newUser) => {
-    const newUsers = [...users];
+    registerUser(newUser)
+      .then((newUserData) => {
+        navigate(`/dashboard/${newUserData.user_id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleShow('Cannot create user');
+      });
+  };
 
-    // TODO: Remove when accessing API
-    const nextId = Math.max(...newUsers.map(player => player.id)) + 1;
-
-    newUsers.push({
-      id: nextId,
-      first_name: newUser.firstName,
-      last_name: newUser.lastName,
-      email: newUser.email
+  const displayAllPlayers = (userId) => {
+    fetchAllPlayersByUser(userId).then((players) => {
+      setPlayers(players);
     });
+  };
 
-    setUsers(newUsers);
+  const getMatch = (matchId) => {
+    fetchMatchById(matchId).then((match) => {
+      setCurrentMatch(match);
+    });
   };
 
   return (
@@ -95,9 +197,10 @@ function App() {
           <Route path='/signup' element={<SignUp
             addUserCallBack={addUser}
             onHandleShow={handleShow}/>} />
-          <Route path='/dashboard/*' element={
+          <Route path='/dashboard/:userId' element={
             <ProtectedRoute>
               <Dashboard
+                displayAllPlayers={displayAllPlayers}
                 getPlayerNameFromId={getPlayerNameFromId}
                 addPlayersCallBack={addPlayers}
                 addMatchCallBack={addMatch}
@@ -105,7 +208,11 @@ function App() {
                 players={players}/>
             </ProtectedRoute>}/>
             <Route path='/matchstats' element={<ProtectedRoute><MatchStats /></ProtectedRoute>} />
-            <Route path='/currentmatch' element={<ProtectedRoute><CurrentMatch /></ProtectedRoute>} />
+            <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch
+                match={currentMatch}
+                getMatchCallBack={getMatch}
+                getPlayerNameFromId={getPlayerNameFromId}
+                displayAllPlayers={displayAllPlayers}/></ProtectedRoute>} />
         </Routes>
       </AuthContextProvider>
       <ErrorModal showModal={showModal} onHandleClose={handleClose} />

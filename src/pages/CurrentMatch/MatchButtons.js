@@ -1,10 +1,10 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 
-const MatchButtons = () => {
+const MatchButtons = ({playerName}) => {
   return (
     <Card>
-      <Card.Header>Player name</Card.Header>
+      <Card.Header>Player name: {playerName}</Card.Header>
       <Card.Body>
         <button>Ace</button>
         <button>D.fault</button>

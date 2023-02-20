@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 
 const today = new Date();
-function PlayerForm({addPlayersCallBack}) {
+function PlayerForm({userId, addPlayersCallBack}) {
   const [formFields, setFormFields] = useState({
     firstName: '',
     lastName: '',
@@ -24,7 +24,7 @@ function PlayerForm({addPlayersCallBack}) {
       dob: formFields.dob,
       utr: formFields.utr,
       serveStyle: formFields.serveStyle
-    })
+    }, userId)
 
     setFormFields({
       firstName: '',

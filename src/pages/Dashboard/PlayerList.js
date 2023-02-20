@@ -8,8 +8,8 @@ function PlayerList(props) {
         <div key={player.id}>
             <Player
               id={player.id}
-              firstName={player.first_name}
-              lastName={player.last_name}
+              firstName={player.firstName}
+              lastName={player.lastName}
             />
         </div>
       );

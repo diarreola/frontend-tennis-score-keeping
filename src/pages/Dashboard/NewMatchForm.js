@@ -3,8 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Select from 'react-dropdown-select';
+import { useNavigate } from 'react-router-dom'
 
-function NewMatchForm({addMatchCallBack, players}) {
+function NewMatchForm({userId, addMatchCallBack, players}) {
   const [formFields, setFormFields] = useState({
     playerA: 0,
     playerB: 0,
@@ -14,11 +15,17 @@ function NewMatchForm({addMatchCallBack, players}) {
   });
 
   const [disableButton, setDisableButton] = useState(true);
+  const navigate = useNavigate();
 
-  const onFormSubmit = (event) => {
+  const onFormSubmit = async (event) => {
     event.preventDefault();
 
-    addMatchCallBack(formFields);
+    try {
+      await addMatchCallBack(formFields, userId) 
+    } catch(e) {
+      console.log('error:', e)
+      return
+    }
     
 
     setFormFields({
@@ -136,7 +143,7 @@ function NewMatchForm({addMatchCallBack, players}) {
             <Select
               options={players}
               values={[]}
-              labelField="first_name"
+              labelField="firstName"
               valueField="id"
               required
               multi
