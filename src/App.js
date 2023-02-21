@@ -357,7 +357,16 @@ function App() {
       .catch((error) => {
         handleShow('Cant create a stat for a set')
       })
+  }
 
+  const updateGameScoreCallBack = (gameId, playerAScore, playerBScore, setId) => {
+    updateGameScore(gameId, playerAScore, playerBScore, setId)
+    .then((newGameData) => {
+      console.log('updated game', newGameData)
+    })
+    .catch((error) => {
+      handleShow('Cant update game score')
+    })
   }
 
   const getPlayerNameFromId = (playerId) => {
@@ -452,6 +461,7 @@ function App() {
                 sets={sets}
                 games={games}
                 stats={stats}
+                updateGameScoreCallBack={updateGameScoreCallBack}
                 addSetForMatch={addSetForMatch}
                 addGameForSet={addGameForSet}
                 getAllStatsForSet={getAllStatsForSet}

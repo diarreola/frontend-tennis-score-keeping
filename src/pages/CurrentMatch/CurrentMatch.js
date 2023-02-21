@@ -15,6 +15,7 @@ const CurrentMatch = ({
   sets,
   games,
   stats,
+  updateGameScoreCallBack,
   addSetForMatch,
   addGameForSet,
   findCurrentGame,
@@ -38,11 +39,13 @@ const CurrentMatch = ({
   const [playerBSetWins, setPlayerBSetWins] = useState([]);
   const playerAName = getPlayerNameFromId(match.player_a_id);
   const playerBName = getPlayerNameFromId(match.player_b_id);
+  // TODO: state for stats
 
   useEffect(() => {
     getMatchCallBack(matchId);
     displayAllPlayers(userId);
-    getAllSetsCallBack(matchId);
+    getAllSetsCallBack(matchId); // after we update the game points, we call this*
+    console.log('how many times here')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -54,7 +57,7 @@ const CurrentMatch = ({
   useEffect(() => {
     if (currentSet !== undefined) {
       if (Object.keys(currentSet).length !== 0){
-        getAllGames(currentSet.id)
+        getAllGames(currentSet.id)  // after we 
         getAllStatsForSet(currentSet.id)
       }
     }
@@ -62,29 +65,10 @@ const CurrentMatch = ({
   }, [currentSet]);
 
   useEffect(() => {
-    setCurrentGame(findCurrentGame());
+    setCurrentGame(findCurrentGame());  // after we update the game points, we call this*
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [games]);
 
-  // keep track of:
-  // total set, total games
-  // need to manually end games and set
-  // state of current set and game we're on
-  // can check if set or game is over! -> always set
-  // NEED TO 
-
-  // IF the game is done, check if there are any more games to do
-    // no more games: check if we can go to the next set
-      // if we can go to the next set, update previous set to DONE, and go to next set, game is 0
-      // if no more next set or game: END
-    // if there are games 
-
-  // after every update, we need to check if its done????
-
-  // need to handle creating ->
-  // ace, first serve -> wins point
-  // api call -> creates a single set -> will need to create sets one by one -> (match routesline 109, add_new_set_to_match)
-  // for each set, create num games -> add_new game to set, set routes, 139 
 
   // clicking buttons -> call api in game routes update_game
   // d fault -> opponent wins point
@@ -93,17 +77,15 @@ const CurrentMatch = ({
   // f. error -> opponent wins points
 
 
-  // different cases:
   // 4. if a player wins match.no_of_gamesperset, then game is done  ** update score appropriately
 
-  // 
-  const gameIsOn = () => {
+  const continueCurrentGame = () => {
     console.log('current game', currentGame, currentGame.game_done)
-
-    return currentGame.game_done
+    return !currentGame.game_done
   }
 
-  // can continue to next game in the SAME set
+  // can continue to next game in the SAME set // Check if previous game is done 
+  // retrieve all new stuff
   const nextGame = () => {
     if (currentGameNum < maxGameSets) {
       return true
@@ -111,26 +93,28 @@ const CurrentMatch = ({
     return false // if false, we know we need to create a new set
   }
 
+  // 
   const nextSet = () => {
-    if (currentSetNum < maxNumSets) {
+    if (currentSetNum < maxNumSets) {  //set_done == True
       return true
     }
-    return false // wont go to next set
+    return false
 
   }
 
-  const updateGameScore = (currentGame, playerAScore, playerBScore) => {
-    // playerAPoints
+  const updateGameScore = (playerAScore, playerBScore) => {
     currentGame.player_a_score = playerAScore;
     currentGame.player_b_score = playerBScore;
+    setPlayerAPoints(playerAScore)
+    setPlayerBPoints(playerBScore)
   }
-
-  // we havent reached maxGameSets, we create a new game
 
   const createNewGame = () => {
     try {
       addGameForSet(currentSet.id, currentGame.game_number + 1)
       setCurrentGameNum(currentGame.game_number + 1)
+      playerAPoints(0)
+      playerBPoints(0)
     } catch(e) {
       console.log('error in creating new game, line 140', e)
     }
@@ -146,21 +130,68 @@ const CurrentMatch = ({
 
   }
 
-  // helper function
-  // 1. populate set values -> when does this happen? -> everytime someone wins a game?
-  // 2. populate game points -> whenver we add/lose points
-
+  const updateGamePoints = () => {
+    try {
+      updateGameScoreCallBack(currentGame.id, playerAPoints, playerBPoints, currentSet.id)
+    } catch(e) {
+      console.log('error updating game points', e)
+    }
+  }
+  console.log('playerASetWins', playerASetWins)
+  console.log('playerBSetWins', playerBSetWins)
+  // make sure its the updated currentSet
+  const displaySetPoints = () => {
+    if (playerASetWins.length === currentSetNum && playerBSetWins.length === currentSetNum) {
+      const newPlayerASetWins = [...playerASetWins]
+      const newPlayerBSetWins = [...playerBSetWins] //also want to grab match agsin!
+      newPlayerASetWins[currentSetNum-1] = currentSet.player_a_games_won
+      newPlayerBSetWins[currentSetNum-1] = currentSet.player_b_games_won
+      setPlayerASetWins(newPlayerASetWins)
+      setPlayerBSetWins(newPlayerBSetWins)
+    } else {
+      const newPlayerASetWins = [...playerASetWins]
+      const newPlayerBSetWins = [...playerBSetWins] //also want to grab match agsin!
+      newPlayerASetWins.push(currentSet.player_a_games_won)
+      newPlayerBSetWins.push(currentSet.player_b_games_won)
+      setPlayerASetWins(newPlayerASetWins) //currentSet.player_a_games_won
+      setPlayerBSetWins(newPlayerBSetWins) //currentSet.player_b_games_won
+    }
+  }
 
   // Button STUFF
   const onAceClick = (playerName) => {
-    // need to know which player :)
-    console.log('event', playerName)
-    // const playerType = playerAName == playerName ? 'a' : 'b'
-    // console.log('pt', playerType)
-
-    // increment player score, set state
-    // api call 
+    if (continueCurrentGame()) {
+      incrementPoints(playerName)
+    } else if (nextGame) {
+      console.log('in here creating a new game within the same set ace click')
+      updateGamePoints();
+      createNewGame(); //set game points to 0 0
+      getAllSetsCallBack(matchId);
+      incrementPoints(playerName);
+    } else if (nextSet) {
+      console.log('in here cerating a new set ace click')
+      updateGamePoints();
+      createNewSet();
+      getAllSetsCallBack(matchId);
+      incrementPoints(playerName);
+    } else {
+      alert('Match is over')
+    }
+    displaySetPoints()
   }
+
+  const incrementPoints = (playerName) => {
+    const incrementedPointsA = playerAPoints + 1;
+    const incrementedPointsB = playerBPoints + 1;
+    if (playerAName === playerName) {
+      updateGameScore(incrementedPointsA, playerBPoints) 
+    } else {
+      updateGameScore(playerAPoints, incrementedPointsB)
+    }
+  }
+
+  console.log('playerA points2', playerAPoints)
+  console.log('playerA points2', playerBPoints)
 
   const onDFaultClick = (event) => {
     
