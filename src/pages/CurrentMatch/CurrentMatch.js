@@ -13,9 +13,11 @@ const CurrentMatch = ({
   match,
   sets,
   games,
+  stats,
   findCurrentGame,
   findCurrentSet,
   getAllGames,
+  getAllStatsForSet,
   getAllSetsCallBack,
   getMatchCallBack,
   getPlayerNameFromId,
@@ -23,7 +25,6 @@ const CurrentMatch = ({
   const { userId, matchId } = useParams();
   const [currentSetNum, setCurrentSetNum] = useState(1);
   const [currentGameNum, setCurrentGameNum] = useState(1);
-  // store state of current set and game
   const [currentSet, setCurrentSet] = useState({});
   const [currentGame, setCurrentGame] = useState({});
 
@@ -48,10 +49,13 @@ const CurrentMatch = ({
     if (currentSet !== undefined) {
       if (Object.keys(currentSet).length !== 0){
         getAllGames(currentSet.id)
+        getAllStatsForSet(currentSet.id)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSet]);
+
+  console.log('stats: ', stats)
 
   useEffect(() => {
     setCurrentGame(findCurrentGame());

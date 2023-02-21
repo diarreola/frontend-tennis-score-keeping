@@ -145,11 +145,9 @@ const fetchAllSetsFromMatchId = (matchId) => {
 };
 
 const fetchAllGamesFromSetId = (setId) => {
-  console.log('in api call')
   return axios
     .get(`${kBaseUrl}sets/${setId}/games`)
     .then((response) => {
-      console.log('response data, fetch all games', response.data)
       return response.data
     })
     .catch((error) => {
@@ -231,7 +229,17 @@ const registerStatForSet = (setId, aces, doubleFaults,
     // "Stat for 1 created with Set1"
 }
 
-// TODO: retrieve all stats
+const fetchAllStatsFromSet = (setId) => {
+  return axios
+    .get(`${kBaseUrl}sets/${setId}/stats`)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 const updateStatForSet = (statId, aces, doubleFaults, 
     forcedErrors, playerId, unforcedErrors, winners, setId, setWon) => {
   const requestBody = {
@@ -261,6 +269,7 @@ function App() {
   const [currentMatch, setCurrentMatch] = useState({});
   const [sets, setSets] = useState([]);  //set to empty when the match is over
   const [games, setGames] = useState([]);  //set to empty when set is over and match is over
+  const [stats, setStats] = useState([]); //set to empty when set is over and match is over
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
   const handleClose = () => setShowModal({ show: false, message: '' });
@@ -342,6 +351,7 @@ function App() {
       forcedErrors, playerId, unforcedErrors, winners)
       .then((newStatData) => {
         console.log('stat for set, create stat', newStatData)
+        setStats(newStatData)
       })
       .catch((error) => {
         handleShow('Cant create a stat for a set')
@@ -385,6 +395,13 @@ function App() {
   const getAllSets = (matchId) => {
     fetchAllSetsFromMatchId(matchId).then((sets) => {
       setSets(sets)
+    })
+  }
+
+  const getAllStatsForSet = (setId) => {
+    fetchAllStatsFromSet(setId).then((stats) => {
+      console.log('insife fetch all stats', stats)
+      setStats(stats)
     })
   }
 
@@ -433,6 +450,8 @@ function App() {
                 match={currentMatch}
                 sets={sets}
                 games={games}
+                stats={stats}
+                getAllStatsForSet={getAllStatsForSet}
                 getAllGames={getAllGames}
                 findCurrentGame={findCurrentGame}
                 findCurrentSet={findCurrentSet}
