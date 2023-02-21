@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { React, useEffect, useState } from 'react';
 import UserNavbar from '../../components/UserNavbar';
 import MatchButtons from './MatchButtons';
@@ -14,6 +15,8 @@ const CurrentMatch = ({
   sets,
   games,
   stats,
+  addSetForMatch,
+  addGameForSet,
   findCurrentGame,
   findCurrentSet,
   getAllGames,
@@ -89,7 +92,63 @@ const CurrentMatch = ({
   // u. error -> opponent wins point
   // f. error -> opponent wins points
 
-  // how will i know when a game is over -> response body fro api call
+
+  // different cases:
+  // 4. if a player wins match.no_of_gamesperset, then game is done  ** update score appropriately
+
+  // 
+  const gameIsOn = () => {
+    console.log('current game', currentGame, currentGame.game_done)
+
+    return currentGame.game_done
+  }
+
+  // can continue to next game in the SAME set
+  const nextGame = () => {
+    if (currentGameNum < maxGameSets) {
+      return true
+    }
+    return false // if false, we know we need to create a new set
+  }
+
+  const nextSet = () => {
+    if (currentSetNum < maxNumSets) {
+      return true
+    }
+    return false // wont go to next set
+
+  }
+
+  const updateGameScore = (currentGame, playerAScore, playerBScore) => {
+    // playerAPoints
+    currentGame.player_a_score = playerAScore;
+    currentGame.player_b_score = playerBScore;
+  }
+
+  // we havent reached maxGameSets, we create a new game
+
+  const createNewGame = () => {
+    try {
+      addGameForSet(currentSet.id, currentGame.game_number + 1)
+      setCurrentGameNum(currentGame.game_number + 1)
+    } catch(e) {
+      console.log('error in creating new game, line 140', e)
+    }
+  }
+
+  const createNewSet = () => {
+    try {
+      addSetForMatch(matchId, currentSet.set_number + 1, 1, match.player_a_id, match.player_b_id)
+      setCurrentSetNum(currentSet.set_number + 1)
+    } catch(e) {
+      console.log('error in creating new set and game and stat', e)
+    }
+
+  }
+
+  // helper function
+  // 1. populate set values -> when does this happen? -> everytime someone wins a game?
+  // 2. populate game points -> whenver we add/lose points
 
 
   // Button STUFF

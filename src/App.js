@@ -339,6 +339,7 @@ function App() {
     registerNewGame(setId, gameNum)
     .then((newGameData) => {
       console.log('newgamedata', newGameData)
+      // might need to add this new game to state setGames
     })
     .catch((error) => {
       handleShow('Cant create a game, try creating another match')
@@ -451,6 +452,8 @@ function App() {
                 sets={sets}
                 games={games}
                 stats={stats}
+                addSetForMatch={addSetForMatch}
+                addGameForSet={addGameForSet}
                 getAllStatsForSet={getAllStatsForSet}
                 getAllGames={getAllGames}
                 findCurrentGame={findCurrentGame}
