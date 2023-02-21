@@ -27,9 +27,12 @@ const CurrentMatch = ({
   const [currentGameNum, setCurrentGameNum] = useState(1);
   const [currentSet, setCurrentSet] = useState({});
   const [currentGame, setCurrentGame] = useState({});
-
+  const [playerAPoints, setPlayerAPoints] = useState(0);
+  const [playerBPoints, setPlayerBPoints] = useState(0);
   const maxNumSets = match.no_of_sets;
   const maxGameSets = (match.no_of_gamesperset * 2) - 1;
+  const [playerASetWins, setPlayerASetWins] = useState([]);
+  const [playerBSetWins, setPlayerBSetWins] = useState([]);
   const playerAName = getPlayerNameFromId(match.player_a_id);
   const playerBName = getPlayerNameFromId(match.player_b_id);
 
@@ -54,8 +57,6 @@ const CurrentMatch = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSet]);
-
-  console.log('stats: ', stats)
 
   useEffect(() => {
     setCurrentGame(findCurrentGame());
@@ -90,10 +91,37 @@ const CurrentMatch = ({
 
   // how will i know when a game is over -> response body fro api call
 
+
+  // Button STUFF
+  const onAceClick = (playerName) => {
+    // need to know which player :)
+    console.log('event', playerName)
+    // const playerType = playerAName == playerName ? 'a' : 'b'
+    // console.log('pt', playerType)
+
+    // increment player score, set state
+    // api call 
+  }
+
+  const onDFaultClick = (event) => {
+    
+  }
+
+  const onWinnerClick = (event) => {
+    
+  }
+
+  const onUErrorClick = (event) => {
+    
+  }
+
+  const onFErrorClick = (event) => {
+    
+  } 
+
   return (
     <div>
       <UserNavbar></UserNavbar>
-
       <Container>
         <Row>
           <Col>
@@ -101,6 +129,10 @@ const CurrentMatch = ({
               match={match}
               playerA={playerAName}
               playerB={playerBName}
+              playerAPoints={playerAPoints}
+              playerBPoints={playerBPoints}
+              playerASetWins={playerASetWins}
+              playerBSetWins={playerBSetWins}
             ></MatchScoreTable>
           </Col>
         </Row>
@@ -111,10 +143,22 @@ const CurrentMatch = ({
         </Row>
         <Row>
           <Col>
-            <MatchButtons playerName={playerAName} />
+            <MatchButtons
+              playerName={playerAName}
+              onAceClick={onAceClick}
+              onDFaultClick={onDFaultClick}
+              onWinnerClick={onWinnerClick}
+              onUErrorClick={onUErrorClick}
+              onFErrorClick={onFErrorClick}/>
           </Col>
           <Col>
-            <MatchButtons playerName={playerBName} />
+            <MatchButtons
+              playerName={playerBName}
+              onAceClick={onAceClick}
+              onDFaultClick={onDFaultClick}
+              onWinnerClick={onWinnerClick}
+              onUErrorClick={onUErrorClick}
+              onFErrorClick={onFErrorClick}/>
           </Col>
         </Row>
       </Container>
