@@ -4,7 +4,7 @@ import MatchScoreSetCol from './MatchScoreSetCol';
 import MatchScoreSetRow from './MatchScoreSetRow';
 
 const MatchScoreTable = ({match, playerA, playerB}) => {
-  // get sets, create dynamic sets
+  // Add game number to table!, dynamically
   const numSets = match.no_of_sets;
   const numGames = match.no_of_gamesperset;
 

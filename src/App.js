@@ -81,6 +81,36 @@ const registerNewMatch = (newMatchData, currentUser) => {
     });
 }
 
+const registerNewSet = (matchId, setNum) => {
+  const requestBody = {
+    set_number: setNum
+  }
+
+  return axios
+    .post(`${kBaseUrl}matches/${matchId}/set`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const registerNewGame = (setId, gameNum) => {
+  const requestBody = {
+    game_number: gameNum
+  }
+
+  return axios
+    .post(`${kBaseUrl}sets/${setId}/game`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 const fetchMatchById = (matchId) => {
   return axios
     .get(`${kBaseUrl}matches/${matchId}`)
@@ -103,10 +133,28 @@ const fetchAllPlayersByUser = (currentUser) => {
     });
 }
 
+const fetchAllSetsFromMatchId = (matchId) => {
+  console.log('in api call')
+  return axios
+    .get(`${kBaseUrl}matches/${matchId}/sets`)
+    .then((response) => {
+      console.log('response data', response.data)
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+
 function App() {
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
   const [currentMatch, setCurrentMatch] = useState({});
+  const [sets, setSets] = useState([]);  //set to empty when the match is over
+  const [games, setGames] = useState({});  //set to empty when set is over and match is over
+  // const [currentSet, setCurrentSet] = useState({});
+  const [currentGame, setCurrentGame] = useState({});
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
   const handleClose = () => setShowModal({ show: false, message: '' });
@@ -134,6 +182,7 @@ function App() {
     });
   };
 
+  // also add a set and game :)
   const addMatch = (newMatch, userId) => {
     registerNewMatch(newMatch, userId)
     .then((newMatchData) => {
@@ -148,6 +197,7 @@ function App() {
         matchName: newMatch.matchName
       });
       setMatches(newMatches);
+      addSetForMatch(newMatchData.New_match_id, 1, 1)
       navigate(`/currentmatch/${userId}/match/${newMatchData.New_match_id}`);
     })
     .catch((error) => {
@@ -155,6 +205,30 @@ function App() {
       handleShow('Cannot create current match')
     });
   };
+
+  // Add set and game
+  const addSetForMatch = (matchId, setNum, gameNum) => {
+    registerNewSet(matchId, setNum)
+    .then((newSetData) => {
+      console.log('newsetdata', newSetData)
+      // setCurrentSet(newSetData)
+      addGameForSet(newSetData.Set_id, gameNum)
+    })
+    .catch((error) => {
+      handleShow('Cant create a set, try creating another match')
+    })
+  };
+
+  const addGameForSet = (setId, gameNum) => {
+    registerNewGame(setId, gameNum)
+    .then((newGameData) => {
+      console.log('newgamedata', newGameData)
+      setCurrentGame(newGameData)
+    })
+    .catch((error) => {
+      handleShow('Cant create a game, try creating another match')
+    })
+  }
 
   const getPlayerNameFromId = (playerId) => {
     let playerName = '';
@@ -189,6 +263,23 @@ function App() {
     });
   };
 
+
+  const getAllSets = (matchId) => {
+    fetchAllSetsFromMatchId(matchId).then((sets) => {
+      console.log('sets inside', sets)
+      setSets(sets)
+    })
+  }
+
+  const findCurrentSet = () => {
+    for (const set of sets) {
+      if (set.set_done === false) {
+        return set
+      }
+    }
+  };
+
+
   return (
     <div className="App">
       <AuthContextProvider>
@@ -210,6 +301,11 @@ function App() {
             <Route path='/matchstats' element={<ProtectedRoute><MatchStats /></ProtectedRoute>} />
             <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch
                 match={currentMatch}
+                sets={sets}
+                // currentSet={currentSet}
+                currentGame={currentGame}
+                findCurrentSet={findCurrentSet}
+                getAllSetsCallBack={getAllSets}
                 getMatchCallBack={getMatch}
                 getPlayerNameFromId={getPlayerNameFromId}
                 displayAllPlayers={displayAllPlayers}/></ProtectedRoute>} />
