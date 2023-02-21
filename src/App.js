@@ -157,7 +157,6 @@ const fetchAllGamesFromSetId = (setId) => {
     });
 };
 
-
 function App() {
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
@@ -191,7 +190,6 @@ function App() {
     });
   };
 
-  // also add a set and game :)
   const addMatch = (newMatch, userId) => {
     registerNewMatch(newMatch, userId)
     .then((newMatchData) => {
@@ -215,7 +213,6 @@ function App() {
     });
   };
 
-  // Add set and game
   const addSetForMatch = (matchId, setNum, gameNum) => {
     registerNewSet(matchId, setNum)
     .then((newSetData) => {
@@ -269,7 +266,6 @@ function App() {
     });
   };
 
-
   const getAllSets = (matchId) => {
     fetchAllSetsFromMatchId(matchId).then((sets) => {
       setSets(sets)
@@ -284,13 +280,19 @@ function App() {
     }
   };
 
-  // fetchAllGamesFromSetId = (setId)
   const getAllGames = (setId) => {
     fetchAllGamesFromSetId(setId).then((games) => {
       setGames(games)
     })
   }
-  // find current game
+
+  const findCurrentGame = () => {
+    for (const game of games) {
+      if (game.game_done === false) {
+        return game
+      }
+    }
+  };
 
   return (
     <div className="App">
@@ -316,8 +318,7 @@ function App() {
                 sets={sets}
                 games={games}
                 getAllGames={getAllGames}
-                // currentSet={currentSet}
-                // currentGame={currentGame}
+                findCurrentGame={findCurrentGame}
                 findCurrentSet={findCurrentSet}
                 getAllSetsCallBack={getAllSets}
                 getMatchCallBack={getMatch}

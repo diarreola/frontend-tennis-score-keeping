@@ -13,13 +13,13 @@ const CurrentMatch = ({
   match,
   sets,
   games,
+  findCurrentGame,
   findCurrentSet,
   getAllGames,
   getAllSetsCallBack,
   getMatchCallBack,
   getPlayerNameFromId,
-  displayAllPlayers,
-}) => {
+  displayAllPlayers }) => {
   const { userId, matchId } = useParams();
   const [currentSetNum, setCurrentSetNum] = useState(1);
   const [currentGameNum, setCurrentGameNum] = useState(1);
@@ -53,9 +53,10 @@ const CurrentMatch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSet]);
 
-  // Todo: get all games based on set we are on
-
-  // once we have current set, we can fetch all games from setid, then we can retrieve the current game based on game_done
+  useEffect(() => {
+    setCurrentGame(findCurrentGame());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [games]);
 
   // keep track of:
   // total set, total games
