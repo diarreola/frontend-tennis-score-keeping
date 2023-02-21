@@ -134,11 +134,22 @@ const fetchAllPlayersByUser = (currentUser) => {
 }
 
 const fetchAllSetsFromMatchId = (matchId) => {
-  console.log('in api call')
   return axios
     .get(`${kBaseUrl}matches/${matchId}/sets`)
     .then((response) => {
-      console.log('response data', response.data)
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const fetchAllGamesFromSetId = (setId) => {
+  console.log('in api call')
+  return axios
+    .get(`${kBaseUrl}sets/${setId}/games`)
+    .then((response) => {
+      console.log('response data, fetch all games', response.data)
       return response.data
     })
     .catch((error) => {
@@ -152,9 +163,7 @@ function App() {
   const [matches, setMatches] = useState([]);
   const [currentMatch, setCurrentMatch] = useState({});
   const [sets, setSets] = useState([]);  //set to empty when the match is over
-  const [games, setGames] = useState({});  //set to empty when set is over and match is over
-  // const [currentSet, setCurrentSet] = useState({});
-  const [currentGame, setCurrentGame] = useState({});
+  const [games, setGames] = useState([]);  //set to empty when set is over and match is over
   const [showModal, setShowModal] = useState({ show: false, message: '' });
   const navigate = useNavigate();
   const handleClose = () => setShowModal({ show: false, message: '' });
@@ -210,8 +219,6 @@ function App() {
   const addSetForMatch = (matchId, setNum, gameNum) => {
     registerNewSet(matchId, setNum)
     .then((newSetData) => {
-      console.log('newsetdata', newSetData)
-      // setCurrentSet(newSetData)
       addGameForSet(newSetData.Set_id, gameNum)
     })
     .catch((error) => {
@@ -223,7 +230,6 @@ function App() {
     registerNewGame(setId, gameNum)
     .then((newGameData) => {
       console.log('newgamedata', newGameData)
-      setCurrentGame(newGameData)
     })
     .catch((error) => {
       handleShow('Cant create a game, try creating another match')
@@ -266,7 +272,6 @@ function App() {
 
   const getAllSets = (matchId) => {
     fetchAllSetsFromMatchId(matchId).then((sets) => {
-      console.log('sets inside', sets)
       setSets(sets)
     })
   }
@@ -279,6 +284,13 @@ function App() {
     }
   };
 
+  // fetchAllGamesFromSetId = (setId)
+  const getAllGames = (setId) => {
+    fetchAllGamesFromSetId(setId).then((games) => {
+      setGames(games)
+    })
+  }
+  // find current game
 
   return (
     <div className="App">
@@ -302,8 +314,10 @@ function App() {
             <Route path='/currentmatch/:userId/match/:matchId' element={<ProtectedRoute><CurrentMatch
                 match={currentMatch}
                 sets={sets}
+                games={games}
+                getAllGames={getAllGames}
                 // currentSet={currentSet}
-                currentGame={currentGame}
+                // currentGame={currentGame}
                 findCurrentSet={findCurrentSet}
                 getAllSetsCallBack={getAllSets}
                 getMatchCallBack={getMatch}
