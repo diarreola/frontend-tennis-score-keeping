@@ -60,14 +60,23 @@ const CurrentMatch = ({
 
   // keep track of:
   // total set, total games
+  // need to manually end games and set
   // state of current set and game we're on
   // can check if set or game is over! -> always set
-  //
+  // NEED TO 
+
+  // IF the game is done, check if there are any more games to do
+    // no more games: check if we can go to the next set
+      // if we can go to the next set, update previous set to DONE, and go to next set, game is 0
+      // if no more next set or game: END
+    // if there are games 
+
+  // after every update, we need to check if its done????
 
   // need to handle creating ->
   // ace, first serve -> wins point
   // api call -> creates a single set -> will need to create sets one by one -> (match routesline 109, add_new_set_to_match)
-  // for each set, create num games -> add_new game to set, set routes, 139
+  // for each set, create num games -> add_new game to set, set routes, 139 
 
   // clicking buttons -> call api in game routes update_game
   // d fault -> opponent wins point

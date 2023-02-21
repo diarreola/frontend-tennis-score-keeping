@@ -16,7 +16,6 @@ function PastMatchesTable(props) {
         </tr>
       );
   });
-  console.log('matchcomp',)
   return (
     <Table striped bordered hover variant="dark">
       <thead>

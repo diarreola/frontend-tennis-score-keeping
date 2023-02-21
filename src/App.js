@@ -157,6 +157,104 @@ const fetchAllGamesFromSetId = (setId) => {
     });
 };
 
+const updateGameScore = (gameId, playerAScore, playerBScore, setId) => {
+  const requestBody = {
+    player_a_score: playerAScore,
+    player_b_score: playerBScore,
+    set_id: setId
+  }
+
+  return axios
+    .put(`${kBaseUrl}games/${gameId}`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  //   { example response body
+  //     "game_done": true,
+  //     "game_number": 6,
+  //     "game_winner": "Nandini",
+  //     "id": 15,
+  //     "player_a_score": 4,
+  //     "player_b_score": 0,
+  //     "set_id": 5
+  //  }
+}
+
+const updateSet = (setId, playerAGamesWon, playerBGamesWon, setWinner) => {
+  const requestBody = {
+    player_a_games_won: playerAGamesWon,
+    player_b_games_won: playerBGamesWon,
+    set_winner: setWinner
+  }
+
+  return axios
+    .put(`${kBaseUrl}sets/${setId}`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    // set_dict["set_number"] = self.set_number
+    // set_dict["player_a_games_won"] = self.player_a_games_won
+    // set_dict["player_b_games_won"] = self.player_b_games_won
+    // set_dict["match_id"] = self.match_id
+    // set_dict["set_winner"] = self.set_winner
+    // set_dict["set_done"] = self.set_done 
+}
+
+const registerStatForSet = (setId, aces, doubleFaults, 
+    forcedErrors, playerId, unforcedErrors, winners) => {
+  const requestBody = {
+    aces: aces,
+    double_faults: doubleFaults,
+    forced_errors: forcedErrors,
+    player_id: playerId,
+    unforced_errors: unforcedErrors,
+    winners: winners
+  }
+
+  return axios
+    .post(`${kBaseUrl}sets/${setId}/stat`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    // "Stat for 1 created with Set1"
+}
+
+// TODO: retrieve all stats
+const updateStatForSet = (statId, aces, doubleFaults, 
+    forcedErrors, playerId, unforcedErrors, winners, setId, setWon) => {
+  const requestBody = {
+    aces: aces,
+    double_faults: doubleFaults,
+    forced_errors: forcedErrors,
+    player_id: playerId, 
+    unforced_errors: unforcedErrors,
+    winners: winners,
+    set_id: setId,
+    set_won: setWon
+  }
+
+  return axios
+    .put(`${kBaseUrl}stats/${statId}`, requestBody)
+    .then((response) => {
+      return response.data
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 function App() {
   const [players, setPlayers] = useState([]);
   const [matches, setMatches] = useState([]);
@@ -204,7 +302,7 @@ function App() {
         matchName: newMatch.matchName
       });
       setMatches(newMatches);
-      addSetForMatch(newMatchData.New_match_id, 1, 1)
+      addSetForMatch(newMatchData.New_match_id, 1, 1, newMatch.playerA, newMatch.playerB)
       navigate(`/currentmatch/${userId}/match/${newMatchData.New_match_id}`);
     })
     .catch((error) => {
@@ -213,10 +311,15 @@ function App() {
     });
   };
 
-  const addSetForMatch = (matchId, setNum, gameNum) => {
+  // adds set, init game, and init stats both players for a single match
+  const addSetForMatch = (matchId, setNum, gameNum, playerAId, playerBId) => {
     registerNewSet(matchId, setNum)
     .then((newSetData) => {
       addGameForSet(newSetData.Set_id, gameNum)
+      addStatForSet(newSetData.Set_id, 0, 0, 
+        0, playerAId, 0, 0)
+        addStatForSet(newSetData.Set_id, 0, 0, 
+          0, playerBId, 0, 0)
     })
     .catch((error) => {
       handleShow('Cant create a set, try creating another match')
@@ -231,6 +334,19 @@ function App() {
     .catch((error) => {
       handleShow('Cant create a game, try creating another match')
     })
+  }
+
+  const addStatForSet = (setId, aces, doubleFaults, 
+    forcedErrors, playerId, unforcedErrors, winners) => {
+    registerStatForSet(setId, aces, doubleFaults, 
+      forcedErrors, playerId, unforcedErrors, winners)
+      .then((newStatData) => {
+        console.log('stat for set, create stat', newStatData)
+      })
+      .catch((error) => {
+        handleShow('Cant create a stat for a set')
+      })
+
   }
 
   const getPlayerNameFromId = (playerId) => {
