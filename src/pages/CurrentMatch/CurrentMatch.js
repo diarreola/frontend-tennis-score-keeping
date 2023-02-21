@@ -29,6 +29,15 @@ const CurrentMatch = ({
 
   const maxNumSets = match.no_of_sets;
   const maxGameSets = match.no_of_gamesperset;
+  const playerAName = getPlayerNameFromId(match.player_a_id);
+  const playerBName = getPlayerNameFromId(match.player_b_id);
+
+  useEffect(() => {
+    getMatchCallBack(matchId);
+    displayAllPlayers(userId);
+    getAllSetsCallBack(matchId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setCurrentSet(findCurrentSet());
@@ -44,8 +53,7 @@ const CurrentMatch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSet]);
 
-  // console.log('currc/ent set', currentSet)
-  console.log('games', games);
+  // Todo: get all games based on set we are on
 
   // once we have current set, we can fetch all games from setid, then we can retrieve the current game based on game_done
 
@@ -68,18 +76,6 @@ const CurrentMatch = ({
 
   // how will i know when a game is over -> response body fro api call
 
-  useEffect(() => {
-    getMatchCallBack(matchId);
-    displayAllPlayers(userId);
-    getAllSetsCallBack(matchId);
-    // inside, find the current set! based off of latest id then find current game
-    // get all sets based on match_id
-    // get all games based on set we are on
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const playerAName = getPlayerNameFromId(match.player_a_id);
-  const playerBName = getPlayerNameFromId(match.player_b_id);
   return (
     <div>
       <UserNavbar></UserNavbar>
