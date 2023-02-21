@@ -28,7 +28,7 @@ const CurrentMatch = ({
   const [currentGame, setCurrentGame] = useState({});
 
   const maxNumSets = match.no_of_sets;
-  const maxGameSets = match.no_of_gamesperset;
+  const maxGameSets = (match.no_of_gamesperset * 2) - 1;
   const playerAName = getPlayerNameFromId(match.player_a_id);
   const playerBName = getPlayerNameFromId(match.player_b_id);
 
