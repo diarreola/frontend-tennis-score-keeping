@@ -98,37 +98,13 @@ const CurrentMatch = ({
         }
       }
     }
-    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerAPoints]);
-
-
-
-  // clicking buttons -> call api in game routes update_game
-  // d fault -> opponent wins point
-  // winner -> wins point
-  // u. error -> opponent wins point
-  // f. error -> opponent wins points
 
   // 4. if a player wins match.no_of_gamesperset, then game is done  ** update score appropriately
 
   const continueCurrentGame = () => {
     return !currentGame.game_done
-  }
-
-  // const nextGame = () => {
-  //   if (currentGameNum < maxGameSets && currentGame.game_done) {
-  //     return true
-  //   }
-  //   return false
-  // }
-
-  const nextSet = () => {
-    if (currentSetNum < maxNumSets) {  //set_done == True
-      return true
-    }
-    return false
-
   }
 
   const updateGameScore = (playerAScore, playerBScore) => {
@@ -159,14 +135,6 @@ const CurrentMatch = ({
 
   }
 
-  const updateGamePoints = () => {
-    try {
-      updateGameScoreCallBack(currentGame.id, playerAPoints, playerBPoints, currentSet.id)
-    } catch(e) {
-      console.log('error updating game points', e)
-    }
-  }
-
   const updateGamePointsSpecial = async (pointsA, pointsB) => {
     try {
       await updateGameScoreCallBack(currentGame.id, pointsA, pointsB, currentSet.id);
@@ -177,11 +145,11 @@ const CurrentMatch = ({
     }
   }
 
-  // make sure its the updated currentSet
   const displaySetPoints = () => {
     if (playerASetWins.length === currentSetNum && playerBSetWins.length === currentSetNum) {
       const newPlayerASetWins = [...playerASetWins]
       const newPlayerBSetWins = [...playerBSetWins] //also want to grab match agsin!
+      console.log('display points a and b', currentSet.player_a_games_won, currentSet.player_b_games_won)
       newPlayerASetWins[currentSetNum-1] = currentSet.player_a_games_won
       newPlayerBSetWins[currentSetNum-1] = currentSet.player_b_games_won
       setPlayerASetWins(newPlayerASetWins)
@@ -201,7 +169,7 @@ const CurrentMatch = ({
     if (continueCurrentGame()) {
       incrementPoints(playerName);
     } 
-    displaySetPoints()
+    // displaySetPoints()
   }
 
   const incrementPoints = (playerName) => {
@@ -216,20 +184,35 @@ const CurrentMatch = ({
     }
   }
 
-  const onDFaultClick = (event) => {
-    
+  const onDFaultClick = (playerName) => {
+    // d fault -> opponent wins point
+    const opppositePlayer = playerAName === playerName ? playerBName : playerAName
+    if (continueCurrentGame()) {
+      incrementPoints(opppositePlayer);
+    } 
   }
 
-  const onWinnerClick = (event) => {
-    
+  const onWinnerClick = (playerName) => {
+    // winner -> wins point
+    if (continueCurrentGame()) {
+      incrementPoints(playerName);
+    } 
   }
 
-  const onUErrorClick = (event) => {
-    
+  const onUErrorClick = (playerName) => {
+    // u. error -> opponent wins point
+    const opppositePlayer = playerAName === playerName ? playerBName : playerAName
+    if (continueCurrentGame()) {
+      incrementPoints(opppositePlayer);
+    } 
   }
 
-  const onFErrorClick = (event) => {
-    
+  const onFErrorClick = (playerName) => {
+    // f. error -> opponent wins points
+    const opppositePlayer = playerAName === playerName ? playerBName : playerAName
+    if (continueCurrentGame()) {
+      incrementPoints(opppositePlayer);
+    } 
   } 
 
   return (

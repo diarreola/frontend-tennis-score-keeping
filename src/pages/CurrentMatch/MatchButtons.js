@@ -24,10 +24,10 @@ const MatchButtons = ({ playerName, onAceClick,
       <Card.Header>Player name: {playerName}</Card.Header>
       <Card.Body>
         <button onClick={() => onAceClick(playerName)}>Ace</button>
-        <button onClick={onDFaultClick}>D.fault</button>
-        <button onClick={onWinnerClick}>Winner</button>
-        <button onClick={onUErrorClick}>U.error</button>
-        <button onClick={onFErrorClick}>F.error</button>
+        <button onClick={() => onDFaultClick(playerName)}>D.fault</button>
+        <button onClick={() => onWinnerClick(playerName)}>Winner</button>
+        <button onClick={() => onUErrorClick(playerName)}>U.error</button>
+        <button onClick={() => onFErrorClick(playerName)}>F.error</button>
       </Card.Body>
     </Card>
   )
