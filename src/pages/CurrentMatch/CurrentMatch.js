@@ -9,6 +9,7 @@ import MatchControlFooter from './MatchControlFooter';
 import MatchCourt from './MatchCourt';
 import MatchScoreTable from './MatchScoreTable';
 import { useParams } from 'react-router-dom';
+import Card from 'react-bootstrap/Card';
 
 const CurrentMatch = ({
   match,
@@ -60,12 +61,12 @@ const CurrentMatch = ({
   }, [currentSet]);
 
   useEffect(() => {
-    const newSet = findCurrentSet();
-    const newGame = findCurrentGame();
-    console.log('new set true?', newSet.set_done, newGame.game_done)
-    if (newSet.set_done === true && newGame.game_done === true) {
-      createNewSet();
-    }
+    // const newSet = findCurrentSet();
+    // const newGame = findCurrentGame();
+    // console.log('new set true?', newSet.set_done, newGame.game_done)
+    // if (newSet.set_done === true && newGame.game_done === true) {
+    //   createNewSet();
+    // }
     setCurrentSet(findCurrentSet());
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,7 +117,7 @@ const CurrentMatch = ({
 
   const createNewGame = () => {
     try {
-      setCurrentGameNum(currentGame.game_number + 1)
+      setCurrentGameNum(currentGameNum + 1)
       addGameForSet(currentSet.id, currentGame.game_number + 1)
       setPlayerAPoints(0)
       setPlayerBPoints(0)
@@ -129,6 +130,7 @@ const CurrentMatch = ({
     try {
       addSetForMatch(matchId, currentSet.set_number + 1, 1, match.player_a_id, match.player_b_id)
       setCurrentSetNum(currentSet.set_number + 1)
+      setCurrentGameNum(0)
     } catch(e) {
       console.log('error in creating new set and game and stat', e)
     }
@@ -218,6 +220,11 @@ const CurrentMatch = ({
   return (
     <div>
       <UserNavbar></UserNavbar>
+      <Card>
+        <Card.Header>
+        Match Name: {match.match_name}
+        </Card.Header>
+      </Card>
       <Container>
         <Row>
           <Col>
