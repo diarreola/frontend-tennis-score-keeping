@@ -44,8 +44,7 @@ const CurrentMatch = ({
   useEffect(() => {
     getMatchCallBack(matchId);
     displayAllPlayers(userId);
-    getAllSetsCallBack(matchId); // after we update the game points, we call this*
-    console.log('how many times here')
+    getAllSetsCallBack(matchId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,10 +64,14 @@ const CurrentMatch = ({
   }, [currentSet]);
 
   useEffect(() => {
+    const newGame = findCurrentGame();
+    console.log('inside useeffec', newGame, newGame.game_done)
+    if (newGame.game_done === true) {
+      createNewGame();
+    }
     setCurrentGame(findCurrentGame());  // after we update the game points, we call this*
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [games]);
-
 
   // clicking buttons -> call api in game routes update_game
   // d fault -> opponent wins point
@@ -76,24 +79,19 @@ const CurrentMatch = ({
   // u. error -> opponent wins point
   // f. error -> opponent wins points
 
-
   // 4. if a player wins match.no_of_gamesperset, then game is done  ** update score appropriately
 
   const continueCurrentGame = () => {
-    console.log('current game', currentGame, currentGame.game_done)
     return !currentGame.game_done
   }
 
-  // can continue to next game in the SAME set // Check if previous game is done 
-  // retrieve all new stuff
-  const nextGame = () => {
-    if (currentGameNum < maxGameSets) {
-      return true
-    }
-    return false // if false, we know we need to create a new set
-  }
+  // const nextGame = () => {
+  //   if (currentGameNum < maxGameSets && currentGame.game_done) {
+  //     return true
+  //   }
+  //   return false
+  // }
 
-  // 
   const nextSet = () => {
     if (currentSetNum < maxNumSets) {  //set_done == True
       return true
@@ -111,10 +109,10 @@ const CurrentMatch = ({
 
   const createNewGame = () => {
     try {
-      addGameForSet(currentSet.id, currentGame.game_number + 1)
       setCurrentGameNum(currentGame.game_number + 1)
-      playerAPoints(0)
-      playerBPoints(0)
+      addGameForSet(currentSet.id, currentGame.game_number + 1)
+      setPlayerAPoints(0)
+      setPlayerBPoints(0)
     } catch(e) {
       console.log('error in creating new game, line 140', e)
     }
@@ -137,8 +135,15 @@ const CurrentMatch = ({
       console.log('error updating game points', e)
     }
   }
-  console.log('playerASetWins', playerASetWins)
-  console.log('playerBSetWins', playerBSetWins)
+
+  const updateGamePointsSpecial = (pointsA, pointsB) => {
+    try {
+      updateGameScoreCallBack(currentGame.id, pointsA, pointsB, currentSet.id)
+    } catch(e) {
+      console.log('error updating game points', e)
+    }
+  }
+
   // make sure its the updated currentSet
   const displaySetPoints = () => {
     if (playerASetWins.length === currentSetNum && playerBSetWins.length === currentSetNum) {
@@ -158,17 +163,12 @@ const CurrentMatch = ({
     }
   }
 
-  // Button STUFF
-  const onAceClick = (playerName) => {
+  const onAceClick = async (playerName) => {
+    console.log('currentgame inside aceclick', currentGame)
     if (continueCurrentGame()) {
-      incrementPoints(playerName)
-    } else if (nextGame) {
-      console.log('in here creating a new game within the same set ace click')
-      updateGamePoints();
-      createNewGame(); //set game points to 0 0
-      getAllSetsCallBack(matchId);
       incrementPoints(playerName);
-    } else if (nextSet) {
+    } 
+    else if (nextSet) {
       console.log('in here cerating a new set ace click')
       updateGamePoints();
       createNewSet();
@@ -178,20 +178,20 @@ const CurrentMatch = ({
       alert('Match is over')
     }
     displaySetPoints()
+    // check if currentgame state!
   }
 
   const incrementPoints = (playerName) => {
     const incrementedPointsA = playerAPoints + 1;
     const incrementedPointsB = playerBPoints + 1;
     if (playerAName === playerName) {
-      updateGameScore(incrementedPointsA, playerBPoints) 
+      updateGameScore(incrementedPointsA, playerBPoints)
+      updateGamePointsSpecial(incrementedPointsA, playerBPoints)
     } else {
       updateGameScore(playerAPoints, incrementedPointsB)
+      updateGamePointsSpecial(playerAPoints, incrementedPointsB)
     }
   }
-
-  console.log('playerA points2', playerAPoints)
-  console.log('playerA points2', playerBPoints)
 
   const onDFaultClick = (event) => {
     

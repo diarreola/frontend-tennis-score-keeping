@@ -104,6 +104,7 @@ const registerNewGame = (setId, gameNum) => {
   return axios
     .post(`${kBaseUrl}sets/${setId}/game`, requestBody)
     .then((response) => {
+      console.log('register new game', response.data)
       return response.data
     })
     .catch((error) => {
@@ -170,16 +171,6 @@ const updateGameScore = (gameId, playerAScore, playerBScore, setId) => {
     .catch((error) => {
       console.log(error);
     });
-
-  //   { example response body
-  //     "game_done": true,
-  //     "game_number": 6,
-  //     "game_winner": "Nandini",
-  //     "id": 15,
-  //     "player_a_score": 4,
-  //     "player_b_score": 0,
-  //     "set_id": 5
-  //  }
 }
 
 const updateSet = (setId, playerAGamesWon, playerBGamesWon, setWinner) => {
@@ -197,13 +188,6 @@ const updateSet = (setId, playerAGamesWon, playerBGamesWon, setWinner) => {
     .catch((error) => {
       console.log(error);
     });
-
-    // set_dict["set_number"] = self.set_number
-    // set_dict["player_a_games_won"] = self.player_a_games_won
-    // set_dict["player_b_games_won"] = self.player_b_games_won
-    // set_dict["match_id"] = self.match_id
-    // set_dict["set_winner"] = self.set_winner
-    // set_dict["set_done"] = self.set_done 
 }
 
 const registerStatForSet = (setId, aces, doubleFaults, 
@@ -225,8 +209,6 @@ const registerStatForSet = (setId, aces, doubleFaults,
     .catch((error) => {
       console.log(error);
     });
-
-    // "Stat for 1 created with Set1"
 }
 
 const fetchAllStatsFromSet = (setId) => {
@@ -324,6 +306,7 @@ function App() {
   const addSetForMatch = (matchId, setNum, gameNum, playerAId, playerBId) => {
     registerNewSet(matchId, setNum)
     .then((newSetData) => {
+      console.log('registerednew set', newSetData)
       addGameForSet(newSetData.Set_id, gameNum)
       addStatForSet(newSetData.Set_id, 0, 0, 
         0, playerAId, 0, 0)
@@ -338,8 +321,9 @@ function App() {
   const addGameForSet = (setId, gameNum) => {
     registerNewGame(setId, gameNum)
     .then((newGameData) => {
-      console.log('newgamedata', newGameData)
-      // might need to add this new game to state setGames
+      const newGames = [...games];
+      newGames.push(newGameData);
+      setGames(newGames);
     })
     .catch((error) => {
       handleShow('Cant create a game, try creating another match')
@@ -351,7 +335,6 @@ function App() {
     registerStatForSet(setId, aces, doubleFaults, 
       forcedErrors, playerId, unforcedErrors, winners)
       .then((newStatData) => {
-        console.log('stat for set, create stat', newStatData)
         setStats(newStatData)
       })
       .catch((error) => {
@@ -363,6 +346,24 @@ function App() {
     updateGameScore(gameId, playerAScore, playerBScore, setId)
     .then((newGameData) => {
       console.log('updated game', newGameData)
+      const newGames = [];
+
+      for (const game of games) {
+        if (game.id !== newGameData.id) {
+          newGames.push(game)
+        }
+      }
+
+      newGames.push({
+        id: newGameData.id,
+        set_id: newGameData.set_id,
+        game_done: newGameData.game_done,
+        game_number: newGameData.game_number,
+        game_winner: newGameData.game_winner,
+        player_a_score: newGameData.player_a_score,
+        player_b_score: newGameData.player_b_score
+      });
+      setGames(newGames);
     })
     .catch((error) => {
       handleShow('Cant update game score')
@@ -410,7 +411,6 @@ function App() {
 
   const getAllStatsForSet = (setId) => {
     fetchAllStatsFromSet(setId).then((stats) => {
-      console.log('insife fetch all stats', stats)
       setStats(stats)
     })
   }
@@ -430,10 +430,10 @@ function App() {
   }
 
   const findCurrentGame = () => {
-    for (const game of games) {
-      if (game.game_done === false) {
-        return game
-      }
+    if (games.length === 0){
+      return {}
+    } else {
+      return games[games.length-1]
     }
   };
 
