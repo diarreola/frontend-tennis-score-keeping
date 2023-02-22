@@ -22,6 +22,7 @@ function NewMatchForm({userId, addMatchCallBack, players}) {
 
     try {
       await addMatchCallBack(formFields, userId) 
+      // also want to create a set & game
     } catch(e) {
       console.log('error:', e)
       return

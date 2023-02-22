@@ -3,8 +3,9 @@ import Table from 'react-bootstrap/Table';
 import MatchScoreSetCol from './MatchScoreSetCol';
 import MatchScoreSetRow from './MatchScoreSetRow';
 
-const MatchScoreTable = ({match, playerA, playerB}) => {
-  // get sets, create dynamic sets
+const MatchScoreTable = ({match, playerA, playerB, playerAPoints,
+    playerBPoints, playerASetWins, playerBSetWins}) => {
+  // Add game number to table!, dynamically
   const numSets = match.no_of_sets;
   const numGames = match.no_of_gamesperset;
 
@@ -24,21 +25,32 @@ const MatchScoreTable = ({match, playerA, playerB}) => {
 
   const setColComponents = numSetCols();
 
-  const numSetRows = () => {
+  const numSetRows = (playerSetWins) => {
     let setVal = '-';
     let setComponent = [];
     for (let i = 0; i < numSets; i++) {
       setComponent.push(
         <td key={i}>
-          <MatchScoreSetRow setVal={setVal}></MatchScoreSetRow>
+          <MatchScoreSetRow setVal={i < playerSetWins.length ? playerSetWins[i] : setVal}></MatchScoreSetRow>
         </td>
       );
     }
     return setComponent;
   }
 
-  const setRowComponentsPlayerA = numSetRows();
-  const setRowComponentsPlayerB = numSetRows();
+  const numSetGameRow = (playerPoints) => {
+    let setComponent = []
+    setComponent.push(
+      <td key={1}>
+        <MatchScoreSetRow setVal={playerPoints}></MatchScoreSetRow>
+      </td>);
+    return setComponent;
+  }
+
+  const setRowComponentsPlayerA = numSetRows(playerASetWins);
+  const setRowComponentsPlayerAGame = numSetGameRow(playerAPoints);
+  const setRowComponentsPlayerB = numSetRows(playerBSetWins);
+  const setRowComponentsPlayerBGame = numSetGameRow(playerBPoints);
 
   return (
     <Table striped bordered hover variant="dark">
@@ -53,12 +65,12 @@ const MatchScoreTable = ({match, playerA, playerB}) => {
         <tr>
           <td>player a: {playerA}</td>
           {setRowComponentsPlayerA}
-          <td>-</td>
+          {setRowComponentsPlayerAGame}
         </tr>
         <tr>
           <td>player b: {playerB}</td>
           {setRowComponentsPlayerB}
-          <td>-</td>
+          {setRowComponentsPlayerBGame}
         </tr>
       </tbody>
     </Table>
