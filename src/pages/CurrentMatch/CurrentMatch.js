@@ -48,10 +48,6 @@ const CurrentMatch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    setCurrentSet(findCurrentSet());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sets]);
 
   useEffect(() => {
     if (currentSet !== undefined) {
@@ -64,14 +60,49 @@ const CurrentMatch = ({
   }, [currentSet]);
 
   useEffect(() => {
+    const newSet = findCurrentSet();
     const newGame = findCurrentGame();
-    console.log('inside useeffec', newGame, newGame.game_done)
-    if (newGame.game_done === true) {
-      createNewGame();
+    console.log('new set true?', newSet.set_done, newGame.game_done)
+    if (newSet.set_done === true && newGame.game_done === true) {
+      createNewSet();
     }
-    setCurrentGame(findCurrentGame());  // after we update the game points, we call this*
+    setCurrentSet(findCurrentSet());
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sets]);
+
+  useEffect(() => {
+    const newGame = findCurrentGame();
+    if (newGame.game_done === true && currentGameNum < maxGameSets) {
+      console.log('creating a new game')
+      createNewGame();
+    } else if (newGame.game_done === true && currentGameNum === maxGameSets) {
+      setPlayerAPoints(0);
+      setPlayerBPoints(0);
+    }
+    setCurrentGame(findCurrentGame());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [games]);
+
+  useEffect(() => {
+    const newSet = findCurrentSet();
+    const newGame = findCurrentGame();
+    console.log('new set true?', newSet.set_done, newGame.game_done)
+    if (playerAPoints === 0 && playerBPoints === 0) {
+      if (newSet.set_done === true && newGame.game_done === true) {
+        if (currentSetNum < maxNumSets) {
+          console.log('cresate new set in use effect')
+          createNewSet();
+        } else {
+          alert('match completed')
+        }
+      }
+    }
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playerAPoints]);
+
+
 
   // clicking buttons -> call api in game routes update_game
   // d fault -> opponent wins point
@@ -136,9 +167,11 @@ const CurrentMatch = ({
     }
   }
 
-  const updateGamePointsSpecial = (pointsA, pointsB) => {
+  const updateGamePointsSpecial = async (pointsA, pointsB) => {
     try {
-      updateGameScoreCallBack(currentGame.id, pointsA, pointsB, currentSet.id)
+      await updateGameScoreCallBack(currentGame.id, pointsA, pointsB, currentSet.id);
+      await getAllSetsCallBack(matchId);
+
     } catch(e) {
       console.log('error updating game points', e)
     }
@@ -168,17 +201,7 @@ const CurrentMatch = ({
     if (continueCurrentGame()) {
       incrementPoints(playerName);
     } 
-    else if (nextSet) {
-      console.log('in here cerating a new set ace click')
-      updateGamePoints();
-      createNewSet();
-      getAllSetsCallBack(matchId);
-      incrementPoints(playerName);
-    } else {
-      alert('Match is over')
-    }
     displaySetPoints()
-    // check if currentgame state!
   }
 
   const incrementPoints = (playerName) => {

@@ -306,11 +306,16 @@ function App() {
   const addSetForMatch = (matchId, setNum, gameNum, playerAId, playerBId) => {
     registerNewSet(matchId, setNum)
     .then((newSetData) => {
-      console.log('registerednew set', newSetData)
-      addGameForSet(newSetData.Set_id, gameNum)
-      addStatForSet(newSetData.Set_id, 0, 0, 
+      console.log('CREATED NEW SET', newSetData)
+      // TODO: NEEDS TO BE SET OBJECT, rn its a single id
+      const newSets = [...sets];
+      newSets.push(newSetData);
+      setGames(newSets);
+
+      addGameForSet(newSetData.id, gameNum)
+      addStatForSet(newSetData.id, 0, 0, 
         0, playerAId, 0, 0)
-        addStatForSet(newSetData.Set_id, 0, 0, 
+        addStatForSet(newSetData.id, 0, 0, 
           0, playerBId, 0, 0)
     })
     .catch((error) => {
@@ -405,6 +410,7 @@ function App() {
 
   const getAllSets = (matchId) => {
     fetchAllSetsFromMatchId(matchId).then((sets) => {
+      console.log('get all sets', sets)
       setSets(sets)
     })
   }
@@ -416,11 +422,17 @@ function App() {
   }
 
   const findCurrentSet = () => {
-    for (const set of sets) {
-      if (set.set_done === false) {
-        return set
-      }
+    if (sets.length === 0){
+      return {}
+    } else {
+      return sets[sets.length-1]
     }
+
+    // for (const set of sets) {
+    //   if (set.set_done === false) {
+    //     return set
+    //   }
+    // }
   };
 
   const getAllGames = (setId) => {
